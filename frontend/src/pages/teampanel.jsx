@@ -345,7 +345,7 @@ const TeamPanel = () => {
               animate={{ scale: 1, opacity: 1 }}
               className="relative w-full max-w-lg bg-[#0B0616]/90 backdrop-blur-2xl border border-white/20 rounded-3xl p-6 sm:p-10 shadow-[0_25px_60px_rgba(0,0,0,0.95)] text-center overflow-hidden"
             >
-              <div className="absolute top-0 right-0 bg-gradient-to-r from-[#880A45] to-[#14216F] text-white border-b border-l border-white/20 px-4 py-1.5 font-['Cinzel'] text-xs tracking-widest font-bold rounded-tr-3xl shadow-sm">
+              <div className="absolute top-0 right-0 bg-[#0F2A1D] hover:bg-[#375534] text-white border-b border-l border-white/20 px-4 py-1.5 font-['Cinzel'] text-xs tracking-widest font-bold rounded-tr-3xl shadow-sm">
                 TEAM PORTAL
               </div>
 
@@ -391,7 +391,7 @@ const TeamPanel = () => {
                   whileTap={{ scale: 0.98 }}
                   type="submit"
                   disabled={isLoading}
-                  className="w-full h-12 rounded-xl font-['Cinzel'] font-bold text-xs tracking-widest bg-gradient-to-r from-[#880A45] to-[#14216F] text-white shadow-md hover:shadow-lg transition-all cursor-pointer flex items-center justify-center gap-2 uppercase"
+                  className="w-full h-12 rounded-xl font-['Cinzel'] font-bold text-xs tracking-widest bg-[#0F2A1D] hover:bg-[#375534] text-white shadow-md hover:shadow-lg transition-all cursor-pointer flex items-center justify-center gap-2 uppercase"
                 >
                   {isLoading ? "AUTHENTICATING..." : "ENTER TEAM CONSOLE »"}
                 </motion.button>
@@ -428,7 +428,7 @@ const TeamPanel = () => {
                 <button 
                   onClick={refreshTeamData}
                   disabled={isLoading}
-                  className="px-5 py-2 rounded-xl bg-[#880A45] hover:bg-[#9E0D52] text-white transition-all shadow-sm uppercase tracking-wider flex items-center gap-2 cursor-pointer border border-[#880A45]/40"
+                  className="px-5 py-2 rounded-xl bg-[#0F2A1D] hover:bg-[#375534] text-[#E3EED4] transition-all shadow-sm uppercase tracking-wider flex items-center gap-2 cursor-pointer border border-[#6B9071]/40"
                 >
                   <RotateCw className={`h-3.5 w-3.5 ${isLoading ? "animate-spin" : ""}`} />
                   Refresh
@@ -441,23 +441,23 @@ const TeamPanel = () => {
               
               {/* ================= LEFT COLUMN: Team Members (lg:col-span-4) ================= */}
               <div className="lg:col-span-4 flex flex-col gap-8 text-left">
-                <section className="bg-[#0B0616]/90 backdrop-blur-2xl border border-white/15 rounded-2xl p-5 sm:p-6 relative shadow-[0_12px_35px_rgba(0,0,0,0.85)]">
-                  {/* Top Badge with [#880A45] to [#14216F] Gradient */}
-                  <div className="absolute -top-3 left-6 bg-gradient-to-r from-[#880A45] to-[#14216F] text-white px-3.5 py-0.5 rounded-lg text-[10px] font-['Cinzel'] font-bold uppercase tracking-widest border border-white/20 shadow-[0_0_15px_rgba(136,10,69,0.4)]">
+                <section className="bg-[#0F2A1D]/90 backdrop-blur-2xl border border-[#6B9071]/30 rounded-2xl p-5 sm:p-6 relative shadow-lg">
+                  {/* Top Badge */}
+                  <div className="absolute -top-3 left-6 bg-[#375534] text-[#E3EED4] px-3.5 py-0.5 rounded-lg text-[10px] font-['Montserrat'] font-bold uppercase tracking-widest border border-[#6B9071]/40 shadow-md">
                     Team Members
                   </div>
 
                   {/* Team Name Header */}
-                  <div className="flex justify-between items-center mb-6 pb-4 border-b border-white/10 mt-1">
+                  <div className="flex justify-between items-center mb-6 pb-4 border-b border-[#6B9071]/20 mt-1">
                     <div>
-                      <p className="text-[10px] font-['Cinzel'] text-gray-400 uppercase tracking-widest mb-1 font-semibold">
+                      <p className="text-[10px] font-['Montserrat'] text-[#AEC3B0] uppercase tracking-widest mb-1 font-semibold">
                         TEAM NAME
                       </p>
-                      <p className="text-xl sm:text-2xl font-bold font-['Montserrat'] text-white">
+                      <p className="text-xl sm:text-2xl font-bold font-['Montserrat'] text-[#E3EED4]">
                         {team?.teamName || "—"}
                       </p>
                     </div>
-                    <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#880A45] to-[#14216F] border border-white/20 flex items-center justify-center text-white shadow-sm">
+                    <div className="w-10 h-10 rounded-xl bg-[#375534] border border-[#6B9071]/40 flex items-center justify-center text-[#E3EED4] shadow-sm">
                       <Users className="h-5 w-5" />
                     </div>
                   </div>
@@ -473,14 +473,14 @@ const TeamPanel = () => {
                           key={`${m.role}-${m.regNo}-${idx}`}
                           className={`rounded-xl p-3.5 border transition-all flex items-center gap-3.5 relative overflow-hidden ${
                             isLead
-                              ? "bg-[#180D22]/95 border-l-4 border-l-[#880A45] border-t border-r border-b border-[#880A45]/35 shadow-[0_0_20px_rgba(136,10,69,0.18)]"
-                              : "bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20"
+                              ? "bg-[#07150E]/95 border-l-4 border-l-[#6B9071] border-t border-r border-b border-[#6B9071]/40 shadow-sm"
+                              : "bg-[#375534]/20 border border-[#6B9071]/20 hover:bg-[#375534]/30"
                           }`}
                         >
                           <div className={`w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold shrink-0 ${
                             isLead 
-                              ? "bg-gradient-to-r from-[#880A45] to-[#14216F] text-white border border-white/25 shadow-sm" 
-                              : "bg-white/10 text-gray-300 border border-white/15"
+                              ? "bg-[#375534] text-[#E3EED4] border border-[#6B9071]/50 shadow-sm" 
+                              : "bg-[#0F2A1D] text-[#AEC3B0] border border-[#6B9071]/30"
                           }`}>
                             {initialLetter}
                           </div>
@@ -492,7 +492,7 @@ const TeamPanel = () => {
                               </h4>
                               <span className={`text-[9px] font-['Cinzel'] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider ${
                                 isLead 
-                                  ? "bg-gradient-to-r from-[#880A45] to-[#14216F] text-white shadow-xs" 
+                                  ? "bg-[#0F2A1D] hover:bg-[#375534] text-white shadow-xs" 
                                   : "bg-white/10 text-gray-300 border border-white/15"
                               }`}>
                                 {m.label}
@@ -530,7 +530,7 @@ const TeamPanel = () => {
               <div className="lg:col-span-8 flex flex-col text-left">
                 <section className="bg-[#0B0616]/90 backdrop-blur-2xl border border-white/15 rounded-2xl p-5 sm:p-7 relative flex-1 flex flex-col shadow-[0_12px_35px_rgba(0,0,0,0.85)]">
                   {/* Top Badge with [#880A45] to [#14216F] Gradient */}
-                  <div className="absolute -top-3 left-6 bg-gradient-to-r from-[#880A45] to-[#14216F] text-white px-3.5 py-0.5 rounded-lg text-[10px] font-['Cinzel'] font-bold uppercase tracking-widest border border-white/20 shadow-[0_0_15px_rgba(136,10,69,0.4)]">
+                  <div className="absolute -top-3 left-6 bg-[#0F2A1D] hover:bg-[#375534] text-white px-3.5 py-0.5 rounded-lg text-[10px] font-['Cinzel'] font-bold uppercase tracking-widest border border-white/20 shadow-[0_0_15px_rgba(136,10,69,0.4)]">
                     {selectedProblemId ? "Locked Design Brief" : "Hackathon Collection Briefs"}
                   </div>
 
@@ -553,7 +553,7 @@ const TeamPanel = () => {
                   {selectedProblem ? (
                     <div className="space-y-6">
                       <div className="border border-white/15 rounded-2xl bg-black/60 p-6 relative shadow-inner">
-                        <div className="absolute -top-2.5 right-4 bg-gradient-to-r from-[#880A45] to-[#14216F] text-white font-['Cinzel'] text-[10px] font-bold tracking-widest px-3 py-0.5 rounded-full shadow-sm">
+                        <div className="absolute -top-2.5 right-4 bg-[#0F2A1D] hover:bg-[#375534] text-white font-['Cinzel'] text-[10px] font-bold tracking-widest px-3 py-0.5 rounded-full shadow-sm">
                           LOCKED COLLECTION BRIEF
                         </div>
 
@@ -587,7 +587,7 @@ const TeamPanel = () => {
                           <button
                             type="button"
                             onClick={() => setDetailsProblemId(selectedProblem.id)}
-                            className="bg-gradient-to-r from-[#880A45] to-[#14216F] hover:opacity-90 text-white font-['Cinzel'] text-xs font-bold tracking-wider border border-white/20 rounded-xl px-5 py-2 transition cursor-pointer shadow-md"
+                            className="bg-[#0F2A1D] hover:bg-[#375534] hover:opacity-90 text-white font-['Cinzel'] text-xs font-bold tracking-wider border border-white/20 rounded-xl px-5 py-2 transition cursor-pointer shadow-md"
                           >
                             VIEW FULL BRIEF MODAL
                           </button>
@@ -669,7 +669,7 @@ const TeamPanel = () => {
                                     type="button"
                                     disabled={isSubmittingForm}
                                     onClick={() => handleSubmitSubmission(idx)}
-                                    className="bg-gradient-to-r from-[#880A45] to-[#14216F] text-white font-['Cinzel'] font-bold py-2.5 px-6 rounded-xl text-xs tracking-wider shadow-md cursor-pointer uppercase hover:shadow-lg transition-all"
+                                    className="bg-[#0F2A1D] hover:bg-[#375534] text-white font-['Cinzel'] font-bold py-2.5 px-6 rounded-xl text-xs tracking-wider shadow-md cursor-pointer uppercase hover:shadow-lg transition-all"
                                   >
                                     {isSubmittingForm ? "SUBMITTING..." : "SUBMIT DESIGN PROJECT »"}
                                   </motion.button>
@@ -720,7 +720,7 @@ const TeamPanel = () => {
                             <button
                               type="button"
                               onClick={() => setDetailsProblemId(p.id)}
-                              className="w-full bg-gradient-to-r from-[#880A45] to-[#14216F] hover:opacity-90 text-white border border-white/20 font-['Cinzel'] font-bold py-2 rounded-xl text-xs tracking-wider cursor-pointer transition-all uppercase shadow-sm"
+                              className="w-full bg-[#0F2A1D] hover:bg-[#375534] hover:opacity-90 text-white border border-white/20 font-['Cinzel'] font-bold py-2 rounded-xl text-xs tracking-wider cursor-pointer transition-all uppercase shadow-sm"
                             >
                               VIEW DESIGN BRIEF
                             </button>
@@ -882,7 +882,7 @@ const TeamPanel = () => {
                         setProblemsError("Unable to connect to the server.");
                       }
                     }}
-                    className="bg-gradient-to-r from-[#880A45] to-[#14216F] text-white rounded-xl px-6 py-2.5 shadow-md cursor-pointer hover:shadow-lg transition-all uppercase tracking-wider"
+                    className="bg-[#0F2A1D] hover:bg-[#375534] text-white rounded-xl px-6 py-2.5 shadow-md cursor-pointer hover:shadow-lg transition-all uppercase tracking-wider"
                   >
                     LOCK THIS BRIEF »
                   </motion.button>

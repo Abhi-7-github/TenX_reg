@@ -1,392 +1,976 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.Server = void 0;
-const connection_1 = require("../cmap/connection");
-const connection_pool_1 = require("../cmap/connection_pool");
-const errors_1 = require("../cmap/errors");
-const constants_1 = require("../constants");
-const error_1 = require("../error");
-const mongo_types_1 = require("../mongo_types");
-const aggregate_1 = require("../operations/aggregate");
-const transactions_1 = require("../transactions");
-const utils_1 = require("../utils");
-const write_concern_1 = require("../write_concern");
-const common_1 = require("./common");
-const monitor_1 = require("./monitor");
-const server_description_1 = require("./server_description");
-const server_selection_1 = require("./server_selection");
-const stateTransition = (0, utils_1.makeStateMachine)({
-    [common_1.STATE_CLOSED]: [common_1.STATE_CLOSED, common_1.STATE_CONNECTING],
-    [common_1.STATE_CONNECTING]: [common_1.STATE_CONNECTING, common_1.STATE_CLOSING, common_1.STATE_CONNECTED, common_1.STATE_CLOSED],
-    [common_1.STATE_CONNECTED]: [common_1.STATE_CONNECTED, common_1.STATE_CLOSING, common_1.STATE_CLOSED],
-    [common_1.STATE_CLOSING]: [common_1.STATE_CLOSING, common_1.STATE_CLOSED]
+require('dotenv').config();
+const express = require('express');
+const cors = require('cors');
+const mongoose = require('mongoose');
+const XLSX = require('xlsx');
+const { connect } = require('./connect');
+const { cloudinary, upload } = require('./cloudinary');
+const {
+  TeamRegistration,
+  AppSettings,
+  ProblemStatement,
+  RoundMarks,
+} = require('./model');
+
+const app = express();
+const PORT = process.env.PORT || 5000;
+
+// Middleware
+app.use(cors());
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+
+// Helper: Validate Admin Passcode
+const validateAdminPassword = (password) => {
+  if (!password) return false;
+  const adminPass = process.env.adminPassword || 'madhan@10x';
+  const downloadPass = process.env.DOWNLOAD_PASSWORD || '10Xpass';
+  const input = String(password).trim();
+  return input === adminPass || input === downloadPass;
+};
+
+// Helper: Upload file buffer to Cloudinary
+const uploadToCloudinary = (fileBuffer, folder = 'uploads') => {
+  return new Promise((resolve, reject) => {
+    const uploadStream = cloudinary.uploader.upload_stream(
+      { folder: folder, resource_type: 'auto' },
+      (error, result) => {
+        if (error) return reject(error);
+        resolve(result);
+      }
+    );
+    uploadStream.end(fileBuffer);
+  });
+};
+
+// ==========================================
+// 1. CONFIG & APP SETTINGS ROUTES
+// ==========================================
+
+// GET /api/registration-status
+app.get('/api/registration-status', async (req, res) => {
+  try {
+    let setting = await AppSettings.findOne({ key: 'registrationStatus' });
+    if (!setting) {
+      setting = await AppSettings.create({ key: 'registrationStatus', enabled: true });
+    }
+    res.json({ success: true, enabled: setting.enabled });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
 });
-/** @internal */
-class Server extends mongo_types_1.TypedEventEmitter {
-    /** @event */
-    static { this.SERVER_HEARTBEAT_STARTED = constants_1.SERVER_HEARTBEAT_STARTED; }
-    /** @event */
-    static { this.SERVER_HEARTBEAT_SUCCEEDED = constants_1.SERVER_HEARTBEAT_SUCCEEDED; }
-    /** @event */
-    static { this.SERVER_HEARTBEAT_FAILED = constants_1.SERVER_HEARTBEAT_FAILED; }
-    /** @event */
-    static { this.CONNECT = constants_1.CONNECT; }
-    /** @event */
-    static { this.DESCRIPTION_RECEIVED = constants_1.DESCRIPTION_RECEIVED; }
-    /** @event */
-    static { this.CLOSED = constants_1.CLOSED; }
-    /** @event */
-    static { this.ENDED = constants_1.ENDED; }
-    /**
-     * Create a server
-     */
-    constructor(topology, description, options) {
-        super();
-        this.on('error', utils_1.noop);
-        this.serverApi = options.serverApi;
-        const poolOptions = { hostAddress: description.hostAddress, ...options };
-        this.topology = topology;
-        this.pool = new connection_pool_1.ConnectionPool(this, poolOptions);
-        this.s = {
-            description,
-            options,
-            state: common_1.STATE_CLOSED,
-            operationCount: 0
-        };
-        for (const event of [...constants_1.CMAP_EVENTS, ...constants_1.APM_EVENTS]) {
-            this.pool.on(event, (e) => this.emit(event, e));
-        }
-        this.pool.on(connection_1.Connection.CLUSTER_TIME_RECEIVED, (clusterTime) => {
-            this.clusterTime = clusterTime;
-        });
-        if (this.loadBalanced) {
-            this.monitor = null;
-            // monitoring is disabled in load balancing mode
-            return;
-        }
-        // create the monitor
-        this.monitor = new monitor_1.Monitor(this, this.s.options);
-        for (const event of constants_1.HEARTBEAT_EVENTS) {
-            this.monitor.on(event, (e) => this.emit(event, e));
-        }
-        this.monitor.on('resetServer', (error) => markServerUnknown(this, error));
-        this.monitor.on(Server.SERVER_HEARTBEAT_SUCCEEDED, (event) => {
-            this.emit(Server.DESCRIPTION_RECEIVED, new server_description_1.ServerDescription(this.description.hostAddress, event.reply, {
-                roundTripTime: this.monitor?.roundTripTime,
-                minRoundTripTime: this.monitor?.minRoundTripTime
-            }));
-            if (this.s.state === common_1.STATE_CONNECTING) {
-                stateTransition(this, common_1.STATE_CONNECTED);
-                this.emit(Server.CONNECT, this);
-            }
-        });
+
+// POST /api/toggle-registration
+app.post('/api/toggle-registration', async (req, res) => {
+  try {
+    const { password, enabled } = req.body;
+    if (!validateAdminPassword(password)) {
+      return res.status(401).json({ success: false, message: 'Invalid administrator key' });
     }
-    get clusterTime() {
-        return this.topology.clusterTime;
+    const setting = await AppSettings.findOneAndUpdate(
+      { key: 'registrationStatus' },
+      { enabled: Boolean(enabled), updatedAt: new Date() },
+      { upsert: true, new: true }
+    );
+    res.json({ success: true, enabled: setting.enabled });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// GET /api/max-teams
+app.get('/api/max-teams', async (req, res) => {
+  try {
+    let setting = await AppSettings.findOne({ key: 'maxTeams' });
+    if (!setting) {
+      setting = await AppSettings.create({ key: 'maxTeams', maxTeams: 50 });
     }
-    set clusterTime(clusterTime) {
-        this.topology.clusterTime = clusterTime;
+    res.json({ success: true, maxTeams: setting.maxTeams });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// POST /api/update-max-teams
+app.post('/api/update-max-teams', async (req, res) => {
+  try {
+    const { password, maxTeams } = req.body;
+    if (!validateAdminPassword(password)) {
+      return res.status(401).json({ success: false, message: 'Invalid administrator key' });
     }
-    get description() {
-        return this.s.description;
+    const num = Number(maxTeams);
+    if (!num || num < 1) {
+      return res.status(400).json({ success: false, message: 'Max teams must be a positive number' });
     }
-    get name() {
-        return this.s.description.address;
+    const setting = await AppSettings.findOneAndUpdate(
+      { key: 'maxTeams' },
+      { maxTeams: num, updatedAt: new Date() },
+      { upsert: true, new: true }
+    );
+    res.json({ success: true, maxTeams: setting.maxTeams });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// GET /api/payment-qr
+app.get('/api/payment-qr', async (req, res) => {
+  try {
+    let setting = await AppSettings.findOne({ key: 'paymentQr' });
+    res.json({ success: true, qrUrl: setting ? setting.qrUrl : '' });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// POST /api/upload-qr
+app.post('/api/upload-qr', upload.single('qrCode'), async (req, res) => {
+  try {
+    const password = req.body.password;
+    if (!validateAdminPassword(password)) {
+      return res.status(401).json({ success: false, message: 'Invalid administrator key' });
     }
-    get autoEncrypter() {
-        if (this.s.options && this.s.options.autoEncrypter) {
-            return this.s.options.autoEncrypter;
-        }
-        return;
+    if (!req.file) {
+      return res.status(400).json({ success: false, message: 'No QR code image uploaded' });
     }
-    get loadBalanced() {
-        return this.topology.description.type === common_1.TopologyType.LoadBalanced;
+    const result = await uploadToCloudinary(req.file.buffer, 'qr_codes');
+    const setting = await AppSettings.findOneAndUpdate(
+      { key: 'paymentQr' },
+      { qrUrl: result.secure_url, updatedAt: new Date() },
+      { upsert: true, new: true }
+    );
+    res.json({ success: true, url: setting.qrUrl });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// GET /api/config/problems-enabled
+app.get('/api/config/problems-enabled', async (req, res) => {
+  try {
+    let setting = await AppSettings.findOne({ key: 'problemStatementsEnabled' });
+    if (!setting) {
+      setting = await AppSettings.create({ key: 'problemStatementsEnabled', enabled: true });
     }
-    /**
-     * Initiate server connect
-     */
-    connect() {
-        if (this.s.state !== common_1.STATE_CLOSED) {
-            return;
-        }
-        stateTransition(this, common_1.STATE_CONNECTING);
-        // If in load balancer mode we automatically set the server to
-        // a load balancer. It never transitions out of this state and
-        // has no monitor.
-        if (!this.loadBalanced) {
-            this.monitor?.connect();
-        }
-        else {
-            stateTransition(this, common_1.STATE_CONNECTED);
-            this.emit(Server.CONNECT, this);
-        }
+    res.json({ success: true, enabled: setting.enabled });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// POST /api/config/problems-enabled
+app.post('/api/config/problems-enabled', async (req, res) => {
+  try {
+    const { password, enabled } = req.body;
+    if (!validateAdminPassword(password)) {
+      return res.status(401).json({ success: false, message: 'Invalid administrator key' });
     }
-    closeCheckedOutConnections() {
-        return this.pool.closeCheckedOutConnections();
+    const setting = await AppSettings.findOneAndUpdate(
+      { key: 'problemStatementsEnabled' },
+      { enabled: Boolean(enabled), updatedAt: new Date() },
+      { upsert: true, new: true }
+    );
+    res.json({ success: true, enabled: setting.enabled });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// ==========================================
+// 2. REGISTRATION & PUBLIC ROUTES
+// ==========================================
+
+// GET /api/teams/count
+app.get('/api/teams/count', async (req, res) => {
+  try {
+    const count = await TeamRegistration.countDocuments();
+    res.json({ success: true, count });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// GET /api/check-team-name/:teamName
+app.get('/api/check-team-name/:teamName', async (req, res) => {
+  try {
+    const teamName = decodeURIComponent(req.params.teamName).trim();
+    const existing = await TeamRegistration.findOne({
+      teamName: { $regex: new RegExp(`^${teamName}$`, 'i') },
+    });
+    res.json({ success: true, exists: Boolean(existing) });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// GET /api/payment-status/:teamName
+app.get('/api/payment-status/:teamName', async (req, res) => {
+  try {
+    const teamName = decodeURIComponent(req.params.teamName).trim();
+    const team = await TeamRegistration.findOne({
+      teamName: { $regex: new RegExp(`^${teamName}$`, 'i') },
+    });
+    if (!team) {
+      return res.status(404).json({ success: false, message: 'Team registration not found' });
     }
-    /** Destroy the server connection */
-    close() {
-        if (this.s.state === common_1.STATE_CLOSED) {
-            return;
-        }
-        stateTransition(this, common_1.STATE_CLOSING);
-        if (!this.loadBalanced) {
-            this.monitor?.close();
-        }
-        this.pool.close();
-        stateTransition(this, common_1.STATE_CLOSED);
-        this.emit('closed');
+    res.json({
+      success: true,
+      status: team.payment.status,
+      verifiedAt: team.payment.verifiedAt,
+      teamName: team.teamName,
+    });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// POST /api/upload-receipt
+app.post('/api/upload-receipt', upload.single('receipt'), async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ success: false, message: 'No receipt file uploaded' });
     }
-    /**
-     * Immediately schedule monitoring of this server. If there already an attempt being made
-     * this will be a no-op.
-     */
-    requestCheck() {
-        if (!this.loadBalanced) {
-            this.monitor?.requestCheck();
-        }
+    const result = await uploadToCloudinary(req.file.buffer, 'payment_receipts');
+    res.json({
+      success: true,
+      url: result.secure_url,
+      fileName: req.file.originalname,
+    });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// POST /api/register
+app.post('/api/register', async (req, res) => {
+  try {
+    // Check registration status
+    const regSetting = await AppSettings.findOne({ key: 'registrationStatus' });
+    if (regSetting && !regSetting.enabled) {
+      return res.status(400).json({ success: false, message: 'Registrations are currently closed.' });
     }
-    async command(operation, timeoutContext) {
-        if (this.s.state === common_1.STATE_CLOSING || this.s.state === common_1.STATE_CLOSED) {
-            throw new error_1.MongoServerClosedError();
-        }
-        const session = operation.session;
-        let conn = session?.pinnedConnection;
-        this.incrementOperationCount();
-        if (conn == null) {
-            try {
-                conn = await this.pool.checkOut({ timeoutContext, signal: operation.options.signal });
-            }
-            catch (checkoutError) {
-                this.decrementOperationCount();
-                if (!(checkoutError instanceof errors_1.PoolClearedError))
-                    this.handleError(checkoutError);
-                throw checkoutError;
-            }
-        }
-        let reauthPromise = null;
-        const cleanup = () => {
-            this.decrementOperationCount();
-            if (session?.pinnedConnection !== conn) {
-                if (reauthPromise != null) {
-                    // The reauth promise only exists if it hasn't thrown.
-                    const checkBackIn = () => {
-                        this.pool.checkIn(conn);
-                    };
-                    void reauthPromise.then(checkBackIn, checkBackIn);
-                }
-                else {
-                    this.pool.checkIn(conn);
-                }
-            }
-        };
-        let cmd;
-        try {
-            cmd = operation.buildCommand(conn, session);
-        }
-        catch (e) {
-            cleanup();
-            throw e;
-        }
-        const options = operation.buildOptions(timeoutContext);
-        const ns = operation.ns;
-        if (this.loadBalanced && isPinnableCommand(cmd, session) && !session?.pinnedConnection) {
-            session?.pin(conn);
-        }
-        options.directConnection = this.topology.s.options.directConnection;
-        const omitReadPreference = operation instanceof aggregate_1.AggregateOperation &&
-            operation.hasWriteStage &&
-            (0, utils_1.maxWireVersion)(conn) < server_selection_1.MIN_SECONDARY_WRITE_WIRE_VERSION;
-        if (omitReadPreference) {
-            delete options.readPreference;
-        }
-        if (this.description.iscryptd) {
-            options.omitMaxTimeMS = true;
-        }
-        try {
-            try {
-                const res = await conn.command(ns, cmd, options, operation.SERVER_COMMAND_RESPONSE_TYPE);
-                (0, write_concern_1.throwIfWriteConcernError)(res);
-                return res;
-            }
-            catch (commandError) {
-                throw this.decorateCommandError(conn, cmd, options, commandError);
-            }
-        }
-        catch (operationError) {
-            if (operationError instanceof error_1.MongoError &&
-                operationError.code === error_1.MONGODB_ERROR_CODES.Reauthenticate) {
-                reauthPromise = this.pool.reauthenticate(conn);
-                reauthPromise.then(undefined, error => {
-                    reauthPromise = null;
-                    (0, utils_1.squashError)(error);
-                });
-                await (0, utils_1.abortable)(reauthPromise, options);
-                reauthPromise = null; // only reachable if reauth succeeds
-                try {
-                    const res = await conn.command(ns, cmd, options, operation.SERVER_COMMAND_RESPONSE_TYPE);
-                    (0, write_concern_1.throwIfWriteConcernError)(res);
-                    return res;
-                }
-                catch (commandError) {
-                    throw this.decorateCommandError(conn, cmd, options, commandError);
-                }
-            }
-            else {
-                throw operationError;
-            }
-        }
-        finally {
-            cleanup();
-        }
+
+    // Check max teams
+    const maxSetting = await AppSettings.findOne({ key: 'maxTeams' });
+    const maxTeams = maxSetting ? maxSetting.maxTeams : 50;
+    const currentCount = await TeamRegistration.countDocuments();
+    if (currentCount >= maxTeams) {
+      return res.status(400).json({ success: false, message: 'Registration capacity reached.' });
     }
-    /**
-     * Handle SDAM error
-     * @internal
-     */
-    handleError(error, connection) {
-        if (!(error instanceof error_1.MongoError)) {
-            return;
-        }
-        const isStaleError = error.connectionGeneration && error.connectionGeneration < this.pool.generation;
-        if (isStaleError) {
-            return;
-        }
-        const isNetworkNonTimeoutError = error instanceof error_1.MongoNetworkError && !(error instanceof error_1.MongoNetworkTimeoutError);
-        const isNetworkTimeoutBeforeHandshakeError = error instanceof error_1.MongoNetworkError && error.beforeHandshake;
-        const isAuthHandshakeError = error.hasErrorLabel(error_1.MongoErrorLabel.HandshakeError);
-        if (isNetworkNonTimeoutError || isNetworkTimeoutBeforeHandshakeError || isAuthHandshakeError) {
-            // In load balanced mode we never mark the server as unknown and always
-            // clear for the specific service id.
-            if (!this.loadBalanced) {
-                error.addErrorLabel(error_1.MongoErrorLabel.ResetPool);
-                markServerUnknown(this, error);
-            }
-            else if (connection) {
-                this.pool.clear({ serviceId: connection.serviceId });
-            }
-        }
-        else {
-            if ((0, error_1.isSDAMUnrecoverableError)(error)) {
-                if (shouldHandleStateChangeError(this, error)) {
-                    const shouldClearPool = (0, error_1.isNodeShuttingDownError)(error);
-                    if (this.loadBalanced && connection && shouldClearPool) {
-                        this.pool.clear({ serviceId: connection.serviceId });
-                    }
-                    if (!this.loadBalanced) {
-                        if (shouldClearPool) {
-                            error.addErrorLabel(error_1.MongoErrorLabel.ResetPool);
-                        }
-                        markServerUnknown(this, error);
-                        process.nextTick(() => this.requestCheck());
-                    }
-                }
-            }
-        }
+
+    const { teamName, teamLeader, teamMember1, teamMember2, teamMember3, payment } = req.body;
+
+    if (!teamName || !teamLeader || !teamMember1 || !teamMember2 || !teamMember3 || !payment) {
+      return res.status(400).json({ success: false, message: 'All registration fields are required.' });
     }
-    /**
-     * Ensure that error is properly decorated and internal state is updated before throwing
-     * @internal
-     */
-    decorateCommandError(connection, cmd, options, error) {
-        if (typeof error !== 'object' || error == null || !('name' in error)) {
-            throw new error_1.MongoRuntimeError('An unexpected error type: ' + typeof error);
-        }
-        if (error.name === 'AbortError' && 'cause' in error && error.cause instanceof error_1.MongoError) {
-            error = error.cause;
-        }
-        if (!(error instanceof error_1.MongoError)) {
-            // Node.js or some other error we have not special handling for
-            return error;
-        }
-        if (connectionIsStale(this.pool, connection)) {
-            return error;
-        }
-        const session = options?.session;
-        if (error instanceof error_1.MongoNetworkError) {
-            if (session && !session.hasEnded && session.serverSession) {
-                session.serverSession.isDirty = true;
-            }
-            // inActiveTransaction check handles commit and abort.
-            if (inActiveTransaction(session, cmd) &&
-                !error.hasErrorLabel(error_1.MongoErrorLabel.TransientTransactionError)) {
-                error.addErrorLabel(error_1.MongoErrorLabel.TransientTransactionError);
-            }
-            if ((isRetryableWritesEnabled(this.topology) || (0, transactions_1.isTransactionCommand)(cmd)) &&
-                (0, utils_1.supportsRetryableWrites)(this) &&
-                !inActiveTransaction(session, cmd)) {
-                error.addErrorLabel(error_1.MongoErrorLabel.RetryableWriteError);
-            }
-        }
-        else {
-            if ((isRetryableWritesEnabled(this.topology) || (0, transactions_1.isTransactionCommand)(cmd)) &&
-                (0, error_1.needsRetryableWriteLabel)(error, (0, utils_1.maxWireVersion)(this), this.description.type) &&
-                !inActiveTransaction(session, cmd)) {
-                error.addErrorLabel(error_1.MongoErrorLabel.RetryableWriteError);
-            }
-        }
-        if (session &&
-            session.isPinned &&
-            error.hasErrorLabel(error_1.MongoErrorLabel.TransientTransactionError)) {
-            session.unpin({ force: true });
-        }
-        this.handleError(error, connection);
-        return error;
+
+    // Check if team name already exists
+    const existingTeam = await TeamRegistration.findOne({
+      teamName: { $regex: new RegExp(`^${teamName.trim()}$`, 'i') },
+    });
+    if (existingTeam) {
+      return res.status(400).json({ success: false, message: 'Team name is already taken.' });
     }
-    /**
-     * Decrement the operation count, returning the new count.
-     */
-    decrementOperationCount() {
-        return (this.s.operationCount -= 1);
+
+    // Check if transaction ID already exists
+    const existingTx = await TeamRegistration.findOne({
+      'payment.transactionId': payment.transactionId.trim(),
+    });
+    if (existingTx) {
+      return res.status(400).json({ success: false, message: 'Transaction ID has already been submitted.' });
     }
-    /**
-     * Increment the operation count, returning the new count.
-     */
-    incrementOperationCount() {
-        return (this.s.operationCount += 1);
+
+    const newTeam = await TeamRegistration.create({
+      teamName: teamName.trim(),
+      teamLeader,
+      teamMember1,
+      teamMember2,
+      teamMember3,
+      payment: {
+        transactionId: payment.transactionId.trim(),
+        receiptUrl: payment.receiptUrl,
+        receiptFileName: payment.receiptFileName || '',
+        status: 'pending',
+      },
+    });
+
+    res.json({ success: true, team: newTeam });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// ==========================================
+// 3. ADMIN & PAYMENTS / EXPORT ROUTES
+// ==========================================
+
+// POST /api/admin/verify & POST /api/verify-admin
+const handleVerifyAdmin = (req, res) => {
+  const { password } = req.body;
+  if (!validateAdminPassword(password)) {
+    return res.status(401).json({ success: false, message: 'Invalid administrator key' });
+  }
+  res.json({ success: true });
+};
+app.post('/api/admin/verify', handleVerifyAdmin);
+app.post('/api/verify-admin', handleVerifyAdmin);
+
+// GET /api/all-payments
+app.get('/api/all-payments', async (req, res) => {
+  try {
+    const password = req.query.password;
+    if (!validateAdminPassword(password)) {
+      return res.status(401).json({ success: false, message: 'Invalid administrator key' });
     }
-}
-exports.Server = Server;
-function markServerUnknown(server, error) {
-    // Load balancer servers can never be marked unknown.
-    if (server.loadBalanced) {
-        return;
+
+    const teams = await TeamRegistration.find().sort({ submittedAt: -1 }).populate('selectedProblemStatement');
+
+    const statusCounts = { pending: 0, verified: 0, rejected: 0 };
+    teams.forEach((t) => {
+      const st = t.payment?.status || 'pending';
+      if (statusCounts[st] !== undefined) statusCounts[st]++;
+    });
+
+    res.json({ success: true, data: teams, statusCounts });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// POST /api/update-payment-status
+app.post('/api/update-payment-status', async (req, res) => {
+  try {
+    const { password, transactionId, teamId, status } = req.body;
+    if (!validateAdminPassword(password)) {
+      return res.status(401).json({ success: false, message: 'Invalid administrator key' });
     }
-    if (error instanceof error_1.MongoNetworkError && !(error instanceof error_1.MongoNetworkTimeoutError)) {
-        server.monitor?.reset();
+    if (!['pending', 'verified', 'rejected'].includes(status)) {
+      return res.status(400).json({ success: false, message: 'Invalid payment status' });
     }
-    server.emit(Server.DESCRIPTION_RECEIVED, new server_description_1.ServerDescription(server.description.hostAddress, undefined, { error }));
-}
-function isPinnableCommand(cmd, session) {
-    if (session) {
-        return (session.inTransaction() ||
-            (session.transaction.isCommitted && 'commitTransaction' in cmd) ||
-            'aggregate' in cmd ||
-            'find' in cmd ||
-            'getMore' in cmd ||
-            'listCollections' in cmd ||
-            'listIndexes' in cmd ||
-            'bulkWrite' in cmd);
+
+    let filter = {};
+    if (transactionId) filter = { 'payment.transactionId': transactionId };
+    else if (teamId) filter = { _id: teamId };
+    else return res.status(400).json({ success: false, message: 'Transaction ID or Team ID required' });
+
+    const update = {
+      'payment.status': status,
+      'payment.verifiedAt': status === 'verified' ? new Date() : null,
+    };
+
+    const team = await TeamRegistration.findOneAndUpdate(filter, update, { new: true });
+    if (!team) {
+      return res.status(404).json({ success: false, message: 'Team record not found' });
     }
-    return false;
-}
-function connectionIsStale(pool, connection) {
-    if (connection.serviceId) {
-        return (connection.generation !== pool.serviceGenerations.get(connection.serviceId.toHexString()));
+
+    res.json({ success: true, team });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// POST /api/download-stats
+app.post('/api/download-stats', async (req, res) => {
+  try {
+    const { password } = req.body;
+    if (!validateAdminPassword(password)) {
+      return res.status(401).json({ success: false, message: 'Invalid administrator key' });
     }
-    return connection.generation !== pool.generation;
-}
-function shouldHandleStateChangeError(server, err) {
-    const etv = err.topologyVersion;
-    const stv = server.description.topologyVersion;
-    return (0, server_description_1.compareTopologyVersion)(stv, etv) < 0;
-}
-function inActiveTransaction(session, cmd) {
-    return session && session.inTransaction() && !(0, transactions_1.isTransactionCommand)(cmd);
-}
-/** this checks the retryWrites option passed down from the client options, it
- * does not check if the server supports retryable writes */
-function isRetryableWritesEnabled(topology) {
-    return topology.s.options.retryWrites !== false;
-}
-//# sourceMappingURL=server.js.map
+
+    const teams = await TeamRegistration.find();
+    let totalTeams = teams.length;
+    let verifiedTeams = 0;
+    let pendingTeams = 0;
+    let rejectedTeams = 0;
+    let totalMembers = 0;
+    let hostelersCount = 0;
+    let dayScholarsCount = 0;
+
+    teams.forEach((t) => {
+      if (t.payment.status === 'verified') verifiedTeams++;
+      else if (t.payment.status === 'rejected') rejectedTeams++;
+      else pendingTeams++;
+
+      const members = [t.teamLeader, t.teamMember1, t.teamMember2, t.teamMember3].filter(
+        (m) => m && m.name
+      );
+      totalMembers += members.length;
+
+      members.forEach((m) => {
+        if (m.residenceType === 'hosteler') hostelersCount++;
+        else dayScholarsCount++;
+      });
+    });
+
+    res.json({
+      success: true,
+      stats: {
+        totalTeams,
+        verifiedTeams,
+        pendingTeams,
+        rejectedTeams,
+        totalMembers,
+        hostelersCount,
+        dayScholarsCount,
+      },
+    });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// POST /api/download-teams (Excel generator)
+app.post('/api/download-teams', async (req, res) => {
+  try {
+    const { password, category } = req.body;
+    if (!validateAdminPassword(password)) {
+      return res.status(401).json({ success: false, message: 'Invalid administrator key' });
+    }
+
+    let filter = {};
+    if (category === 'verified') filter['payment.status'] = 'verified';
+    else if (category === 'pending') filter['payment.status'] = 'pending';
+    else if (category === 'rejected') filter['payment.status'] = 'rejected';
+
+    const teams = await TeamRegistration.find(filter)
+      .sort({ submittedAt: -1 })
+      .populate('selectedProblemStatement');
+
+    let finalTeams = teams;
+    if (category === 'hosteler' || category === 'dayScholar') {
+      finalTeams = teams.filter((t) => {
+        const members = [t.teamLeader, t.teamMember1, t.teamMember2, t.teamMember3].filter(Boolean);
+        return members.some((m) => m.residenceType === category);
+      });
+    }
+
+    const rows = [];
+    finalTeams.forEach((t) => {
+      const leader = t.teamLeader || {};
+      const m1 = t.teamMember1 || {};
+      const m2 = t.teamMember2 || {};
+      const m3 = t.teamMember3 || {};
+      const problem = t.selectedProblemStatement?.title || 'Not Selected';
+
+      rows.push({
+        'Team Name': t.teamName,
+        'Payment Status': t.payment?.status || 'pending',
+        'Transaction ID': t.payment?.transactionId || '',
+        'Design Brief': problem,
+
+        'Leader Name': leader.name || '',
+        'Leader RegNo': leader.regNo || '',
+        'Leader Phone': leader.phoneNo || '',
+        'Leader Year': leader.year || '',
+        'Leader Branch': leader.branch || '',
+        'Leader Section': leader.section || '',
+        'Leader Gender': leader.gender || '',
+        'Leader Residence': leader.residenceType || '',
+        'Leader Hostel': leader.hostelName || '',
+        'Leader Room': leader.roomNo || '',
+
+        'Member 1 Name': m1.name || '',
+        'Member 1 RegNo': m1.regNo || '',
+        'Member 1 Phone': m1.phoneNo || '',
+        'Member 1 Year': m1.year || '',
+        'Member 1 Branch': m1.branch || '',
+        'Member 1 Section': m1.section || '',
+
+        'Member 2 Name': m2.name || '',
+        'Member 2 RegNo': m2.regNo || '',
+        'Member 2 Phone': m2.phoneNo || '',
+        'Member 2 Year': m2.year || '',
+        'Member 2 Branch': m2.branch || '',
+        'Member 2 Section': m2.section || '',
+
+        'Member 3 Name': m3.name || '',
+        'Member 3 RegNo': m3.regNo || '',
+        'Member 3 Phone': m3.phoneNo || '',
+        'Member 3 Year': m3.year || '',
+        'Member 3 Branch': m3.branch || '',
+        'Member 3 Section': m3.section || '',
+        'Submitted At': t.submittedAt ? new Date(t.submittedAt).toISOString() : '',
+      });
+    });
+
+    const worksheet = XLSX.utils.json_to_sheet(rows);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Teams');
+
+    const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'buffer' });
+
+    res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+    res.setHeader('Content-Disposition', `attachment; filename=teams_${category || 'all'}_${Date.now()}.xlsx`);
+    res.send(excelBuffer);
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// ==========================================
+// 4. PROBLEM STATEMENTS & DASHBOARD ROUTES
+// ==========================================
+
+// GET /api/admin/problems
+app.get('/api/admin/problems', async (req, res) => {
+  try {
+    const password = req.query.password;
+    if (!validateAdminPassword(password)) {
+      return res.status(401).json({ success: false, message: 'Invalid administrator key' });
+    }
+    const problems = await ProblemStatement.find().sort({ createdAt: -1 });
+    res.json({ success: true, data: problems });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// GET /api/problems
+app.get('/api/problems', async (req, res) => {
+  try {
+    let setting = await AppSettings.findOne({ key: 'problemStatementsEnabled' });
+    if (setting && !setting.enabled) {
+      return res.json({ success: true, disabled: true, data: [] });
+    }
+    const problems = await ProblemStatement.find().sort({ createdAt: -1 });
+    res.json({ success: true, disabled: false, data: problems });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// POST /api/problems
+app.post('/api/problems', async (req, res) => {
+  try {
+    const { password, title, themePng, shortDescription, fullDescription, limit } = req.body;
+    if (!validateAdminPassword(password)) {
+      return res.status(401).json({ success: false, message: 'Invalid administrator key' });
+    }
+    if (!title || !shortDescription) {
+      return res.status(400).json({ success: false, message: 'Title and Short Description are required.' });
+    }
+    const newProblem = await ProblemStatement.create({
+      title: title.trim(),
+      themePng: themePng ? themePng.trim() : '',
+      shortDescription: shortDescription.trim(),
+      fullDescription: fullDescription ? fullDescription.trim() : '',
+      limit: Number(limit) || 7,
+    });
+    res.json({ success: true, data: newProblem });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// PUT /api/problems/:id
+app.put('/api/problems/:id', async (req, res) => {
+  try {
+    const { password, title, themePng, shortDescription, fullDescription, limit } = req.body;
+    if (!validateAdminPassword(password)) {
+      return res.status(401).json({ success: false, message: 'Invalid administrator key' });
+    }
+    const updated = await ProblemStatement.findByIdAndUpdate(
+      req.params.id,
+      {
+        title: title ? title.trim() : undefined,
+        themePng: themePng !== undefined ? themePng.trim() : undefined,
+        shortDescription: shortDescription ? shortDescription.trim() : undefined,
+        fullDescription: fullDescription !== undefined ? fullDescription.trim() : undefined,
+        limit: limit ? Number(limit) : undefined,
+      },
+      { new: true }
+    );
+    if (!updated) {
+      return res.status(404).json({ success: false, message: 'Problem statement not found' });
+    }
+    res.json({ success: true, data: updated });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// DELETE /api/problems/:id
+app.delete('/api/problems/:id', async (req, res) => {
+  try {
+    const password = req.body.password || req.query.password;
+    if (!validateAdminPassword(password)) {
+      return res.status(401).json({ success: false, message: 'Invalid administrator key' });
+    }
+    const deleted = await ProblemStatement.findByIdAndDelete(req.params.id);
+    if (!deleted) {
+      return res.status(404).json({ success: false, message: 'Problem statement not found' });
+    }
+    res.json({ success: true, message: 'Problem statement deleted' });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// GET /api/admin/teams/selected
+app.get('/api/admin/teams/selected', async (req, res) => {
+  try {
+    const password = req.query.password;
+    if (!validateAdminPassword(password)) {
+      return res.status(401).json({ success: false, message: 'Invalid administrator key' });
+    }
+    const teams = await TeamRegistration.find({
+      selectedProblemStatement: { $ne: null },
+    }).populate('selectedProblemStatement');
+    res.json({ success: true, data: teams });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// POST /api/admin/teams/:id/reset-problem
+app.post('/api/admin/teams/:id/reset-problem', async (req, res) => {
+  try {
+    const { password } = req.body;
+    if (!validateAdminPassword(password)) {
+      return res.status(401).json({ success: false, message: 'Invalid administrator key' });
+    }
+    const team = await TeamRegistration.findById(req.params.id);
+    if (!team) {
+      return res.status(404).json({ success: false, message: 'Team not found' });
+    }
+    if (team.selectedProblemStatement) {
+      await ProblemStatement.findByIdAndUpdate(team.selectedProblemStatement, {
+        $inc: { slotsTaken: -1 },
+      });
+      team.selectedProblemStatement = null;
+      team.selectedProblemSelectedAt = null;
+      await team.save();
+    }
+    res.json({ success: true, message: 'Design brief selection unlocked' });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// POST /api/admin/teams/:teamName/add-form
+app.post('/api/admin/teams/:teamName/add-form', async (req, res) => {
+  try {
+    const { password } = req.body;
+    if (!validateAdminPassword(password)) {
+      return res.status(401).json({ success: false, message: 'Invalid administrator key' });
+    }
+    const teamName = decodeURIComponent(req.params.teamName).trim();
+    const team = await TeamRegistration.findOne({
+      teamName: { $regex: new RegExp(`^${teamName}$`, 'i') },
+    }).populate('selectedProblemStatement');
+    if (!team) {
+      return res.status(404).json({ success: false, message: 'Team not found' });
+    }
+    team.submissions.push({
+      canvaFigmaLink: '',
+      note: '',
+      isSubmitted: false,
+      submittedAt: null,
+    });
+    await team.save();
+    res.json({ success: true, data: team });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// POST /api/admin/teams/:teamName/reset-form/:idx
+app.post('/api/admin/teams/:teamName/reset-form/:idx', async (req, res) => {
+  try {
+    const { password } = req.body;
+    if (!validateAdminPassword(password)) {
+      return res.status(401).json({ success: false, message: 'Invalid administrator key' });
+    }
+    const teamName = decodeURIComponent(req.params.teamName).trim();
+    const idx = Number(req.params.idx);
+    const team = await TeamRegistration.findOne({
+      teamName: { $regex: new RegExp(`^${teamName}$`, 'i') },
+    }).populate('selectedProblemStatement');
+    if (!team) {
+      return res.status(404).json({ success: false, message: 'Team not found' });
+    }
+    if (team.submissions[idx]) {
+      team.submissions[idx] = {
+        canvaFigmaLink: '',
+        note: '',
+        isSubmitted: false,
+        submittedAt: null,
+      };
+      await team.save();
+    }
+    res.json({ success: true, data: team });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// POST /api/admin/teams/:teamName/remove-form/:idx
+app.post('/api/admin/teams/:teamName/remove-form/:idx', async (req, res) => {
+  try {
+    const { password } = req.body;
+    if (!validateAdminPassword(password)) {
+      return res.status(401).json({ success: false, message: 'Invalid administrator key' });
+    }
+    const teamName = decodeURIComponent(req.params.teamName).trim();
+    const idx = Number(req.params.idx);
+    const team = await TeamRegistration.findOne({
+      teamName: { $regex: new RegExp(`^${teamName}$`, 'i') },
+    }).populate('selectedProblemStatement');
+    if (!team) {
+      return res.status(404).json({ success: false, message: 'Team not found' });
+    }
+    if (team.submissions[idx] !== undefined) {
+      team.submissions.splice(idx, 1);
+      await team.save();
+    }
+    res.json({ success: true, data: team });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// GET /api/team/:key
+app.get('/api/team/:key', async (req, res) => {
+  try {
+    const key = decodeURIComponent(req.params.key).trim();
+    const team = await TeamRegistration.findOne({
+      teamName: { $regex: new RegExp(`^${key}$`, 'i') },
+    }).populate('selectedProblemStatement');
+    if (!team) {
+      return res.status(404).json({ success: false, message: 'Team key not found' });
+    }
+    res.json({ success: true, data: team });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// POST /api/team/:teamName/select-problem
+app.post('/api/team/:teamName/select-problem', async (req, res) => {
+  try {
+    const teamName = decodeURIComponent(req.params.teamName).trim();
+    const { problemId } = req.body;
+
+    const team = await TeamRegistration.findOne({
+      teamName: { $regex: new RegExp(`^${teamName}$`, 'i') },
+    });
+    if (!team) {
+      return res.status(404).json({ success: false, message: 'Team not found' });
+    }
+    if (team.selectedProblemStatement) {
+      return res.status(400).json({ success: false, message: 'Team has already selected a design brief.' });
+    }
+
+    const problem = await ProblemStatement.findById(problemId);
+    if (!problem) {
+      return res.status(404).json({ success: false, message: 'Design brief not found' });
+    }
+    if (problem.slotsTaken >= problem.limit) {
+      return res.status(400).json({ success: false, message: 'All slots for this design brief are taken.' });
+    }
+
+    problem.slotsTaken += 1;
+    await problem.save();
+
+    team.selectedProblemStatement = problem._id;
+    team.selectedProblemSelectedAt = new Date();
+    await team.save();
+
+    const updatedTeam = await TeamRegistration.findById(team._id).populate('selectedProblemStatement');
+    res.json({ success: true, data: updatedTeam });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// POST /api/team/:teamName/submit-form/:idx
+app.post('/api/team/:teamName/submit-form/:idx', async (req, res) => {
+  try {
+    const teamName = decodeURIComponent(req.params.teamName).trim();
+    const idx = Number(req.params.idx);
+    const { canvaFigmaLink, note } = req.body;
+
+    const team = await TeamRegistration.findOne({
+      teamName: { $regex: new RegExp(`^${teamName}$`, 'i') },
+    }).populate('selectedProblemStatement');
+    if (!team) {
+      return res.status(404).json({ success: false, message: 'Team not found' });
+    }
+
+    // Ensure array length up to idx
+    while (team.submissions.length <= idx) {
+      team.submissions.push({
+        canvaFigmaLink: '',
+        note: '',
+        isSubmitted: false,
+        submittedAt: null,
+      });
+    }
+
+    team.submissions[idx] = {
+      canvaFigmaLink: canvaFigmaLink ? canvaFigmaLink.trim() : '',
+      note: note ? note.trim() : '',
+      isSubmitted: true,
+      submittedAt: new Date(),
+    };
+
+    await team.save();
+    res.json({ success: true, data: team });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// ==========================================
+// 5. MARKS & LEADERBOARD ROUTES
+// ==========================================
+
+// GET /api/marks-board
+app.get('/api/marks-board', async (req, res) => {
+  try {
+    const rounds = await RoundMarks.find();
+    const roundNames = rounds.map((r) => r.roundName);
+    const outOfByRound = {};
+    rounds.forEach((r) => {
+      outOfByRound[r.roundName] = r.outOf;
+    });
+
+    const teams = await TeamRegistration.find().populate('selectedProblemStatement');
+    const problemStatements = await ProblemStatement.find();
+
+    const teamsWithMarks = teams.map((team) => {
+      const roundMarks = {};
+      let total = 0;
+
+      rounds.forEach((r) => {
+        const found = r.teamMarks.find((m) => m.teamName === team.teamName);
+        const mark = found ? found.mark : 0;
+        roundMarks[r.roundName] = mark;
+        total += mark;
+      });
+
+      return {
+        _id: team._id,
+        teamName: team.teamName,
+        teamLeader: team.teamLeader,
+        teamMember1: team.teamMember1,
+        teamMember2: team.teamMember2,
+        teamMember3: team.teamMember3,
+        payment: team.payment,
+        selectedProblemStatement: team.selectedProblemStatement,
+        roundMarks,
+        total,
+      };
+    });
+
+    res.json({
+      success: true,
+      rounds: roundNames,
+      outOfByRound,
+      problemStatements,
+      data: teamsWithMarks,
+    });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// GET /api/rounds
+app.get('/api/rounds', async (req, res) => {
+  try {
+    const rounds = await RoundMarks.find();
+    res.json({ success: true, data: rounds });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// POST /api/rounds
+app.post('/api/rounds', async (req, res) => {
+  try {
+    const { roundName, outOf } = req.body;
+    if (!roundName || !outOf) {
+      return res.status(400).json({ success: false, message: 'roundName and outOf required' });
+    }
+    const round = await RoundMarks.findOneAndUpdate(
+      { roundName: roundName.trim() },
+      { outOf: Number(outOf) },
+      { upsert: true, new: true }
+    );
+    res.json({ success: true, data: round });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// PUT /api/rounds/:roundName
+app.put('/api/rounds/:roundName', async (req, res) => {
+  try {
+    const oldRoundName = decodeURIComponent(req.params.roundName).trim();
+    const { newRoundName, outOf } = req.body;
+    if (!newRoundName || !outOf) {
+      return res.status(400).json({ success: false, message: 'newRoundName and outOf required' });
+    }
+
+    const round = await RoundMarks.findOne({ roundName: oldRoundName });
+    if (!round) {
+      return res.status(404).json({ success: false, message: 'Round not found' });
+    }
+
+    round.roundName = newRoundName.trim();
+    round.outOf = Number(outOf);
+    await round.save();
+
+    res.json({ success: true, data: round });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// DELETE /api/rounds/:roundName
+app.delete('/api/rounds/:roundName', async (req, res) => {
+  try {
+    const roundName = decodeURIComponent(req.params.roundName).trim();
+    await RoundMarks.findOneAndDelete({ roundName });
+    res.json({ success: true, message: 'Round deleted' });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// PATCH /api/marks & POST /api/marks
+const handleUpdateMarks = async (req, res) => {
+  try {
+    const { teamName, roundName, mark } = req.body;
+    if (!teamName || !roundName || mark === undefined) {
+      return res.status(400).json({ success: false, message: 'teamName, roundName, and mark are required' });
+    }
+
+    const round = await RoundMarks.findOne({ roundName: roundName.trim() });
+    if (!round) {
+      return res.status(404).json({ success: false, message: 'Round not found' });
+    }
+
+    const targetMark = Math.max(0, Math.min(Number(mark), round.outOf));
+    const idx = round.teamMarks.findIndex((tm) => tm.teamName === teamName.trim());
+
+    if (idx !== -1) {
+      round.teamMarks[idx].mark = targetMark;
+    } else {
+      round.teamMarks.push({ teamName: teamName.trim(), mark: targetMark });
+    }
+
+    await round.save();
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+};
+
+app.patch('/api/marks', handleUpdateMarks);
+app.post('/api/marks', handleUpdateMarks);
+
+// Start server
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});

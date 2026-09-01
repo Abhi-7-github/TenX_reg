@@ -332,8 +332,6 @@ const Home = () => {
       if (member.data.residenceType === 'hosteler') {
         const hostelName = (member.data.hostelName || '').trim();
         const roomNo = (member.data.roomNo || '').trim();
-        const wardenName = (member.data.wardenName || '').trim();
-        const wardenPhoneNo = (member.data.wardenPhoneNo || '').trim();
 
         if (!hostelName) {
           setError(`Please enter hostel name for ${member.name}`);
@@ -342,21 +340,6 @@ const Home = () => {
         }
         if (!roomNo) {
           setError(`Please enter room number for ${member.name}`);
-          window.scrollTo({ top: 0, behavior: 'smooth' });
-          return;
-        }
-        if (!wardenName) {
-          setError(`Please enter warden name for ${member.name}`);
-          window.scrollTo({ top: 0, behavior: 'smooth' });
-          return;
-        }
-        if (!wardenPhoneNo) {
-          setError(`Please enter warden phone number for ${member.name}`);
-          window.scrollTo({ top: 0, behavior: 'smooth' });
-          return;
-        }
-        if (wardenPhoneNo.length !== 10 || !/^[0-9]{10}$/.test(wardenPhoneNo)) {
-          setError(`Warden phone number for ${member.name} must be exactly 10 digits`);
           window.scrollTo({ top: 0, behavior: 'smooth' });
           return;
         }
@@ -504,13 +487,13 @@ const Home = () => {
           ...formData,
           payment: {
             transactionId: transactionId,
-            receiptUrl: uploadData.data.url,
+            receiptUrl: uploadData.url || uploadData.data?.url || '',
             receiptFileName: receiptFile.name
           }
         };
 
         const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/register`, {
-          method: 'PUT',
+          method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
@@ -572,23 +555,23 @@ const Home = () => {
   const renderProtocolCard = (stepNum, memberType, title, subtitle, icon) => (
     <div className="relative pl-6 sm:pl-16 pb-8 sm:pb-10">
       {/* Timeline Node Number Circle */}
-      <div className="absolute -left-[15px] sm:-left-[19px] top-1.5 w-7 h-7 sm:w-9 sm:h-9 rounded-full bg-[#0B0616] border-2 border-[#880A45] flex items-center justify-center text-[10px] sm:text-xs font-['Cinzel'] font-bold text-white shadow-[0_0_12px_rgba(136,10,69,0.5)] z-10">
+      <div className="absolute -left-[15px] sm:-left-[19px] top-1.5 w-7 h-7 sm:w-9 sm:h-9 rounded-full bg-[#0F2A1D] border-2 border-[#6B9071] flex items-center justify-center text-[10px] sm:text-xs font-['Montserrat'] font-bold text-[#E3EED4] shadow-md z-10">
         {stepNum}
       </div>
 
       {/* Card Content */}
-      <div className="bg-[#0B0616]/85 backdrop-blur-2xl border border-white/15 rounded-2xl p-4 sm:p-7 shadow-[0_12px_35px_rgba(0,0,0,0.8)] text-left hover:border-white/25 transition-all">
+      <div className="bg-[#0F2A1D]/90 backdrop-blur-2xl border border-[#6B9071]/30 rounded-2xl p-4 sm:p-7 shadow-lg text-left hover:border-[#6B9071]/50 transition-all">
         {/* Header */}
-        <div className="flex justify-between items-start mb-5 pb-3 border-b border-white/10 gap-2">
+        <div className="flex justify-between items-start mb-5 pb-3 border-b border-[#6B9071]/20 gap-2">
           <div className="flex items-center gap-2.5 sm:gap-3 min-w-0">
-            <div className="p-1.5 sm:p-2 rounded-xl bg-white/5 border border-white/10 text-[#880A45] shrink-0">
+            <div className="p-1.5 sm:p-2 rounded-xl bg-[#375534]/50 border border-[#6B9071]/40 text-[#6B9071] shrink-0">
               {icon}
             </div>
             <div className="min-w-0">
-              <h3 className="text-base sm:text-xl font-['Montserrat'] font-bold text-white tracking-tight truncate">
+              <h3 className="text-base sm:text-xl font-['Montserrat'] font-bold text-[#E3EED4] tracking-tight truncate">
                 {title}
               </h3>
-              <p className="text-[9px] sm:text-[10px] font-['Cinzel'] tracking-widest text-gray-400 font-semibold uppercase truncate">
+              <p className="text-[9px] sm:text-[10px] font-['Montserrat'] tracking-widest text-[#AEC3B0] font-semibold uppercase truncate">
                 {subtitle}
               </p>
             </div>
@@ -596,7 +579,7 @@ const Home = () => {
           <button
             type="button"
             onClick={() => handleClearMember(memberType)}
-            className="px-2.5 py-1 text-[9px] sm:text-[10px] font-['Cinzel'] font-bold text-gray-400 hover:text-white border border-white/15 hover:border-white/30 rounded-lg transition-colors cursor-pointer bg-white/5 shrink-0"
+            className="px-2.5 py-1 text-[9px] sm:text-[10px] font-['Montserrat'] font-bold text-[#AEC3B0] hover:text-[#E3EED4] border border-[#6B9071]/30 hover:border-[#6B9071] rounded-lg transition-colors cursor-pointer bg-[#375534]/30 shrink-0"
           >
             CLEAR
           </button>
@@ -775,35 +758,6 @@ const Home = () => {
                 required
               />
             </div>
-            <div>
-              <label className="block text-[10px] font-['Cinzel'] tracking-widest font-semibold text-gray-400 mb-1 uppercase">
-                WARDEN NAME
-              </label>
-              <input
-                type="text"
-                name="wardenName"
-                value={formData[memberType].wardenName}
-                onChange={(e) => handleChange(e, memberType)}
-                className="w-full h-10 px-3 bg-black/40 border border-white/10 rounded-lg text-white text-xs outline-none focus:border-[#880A45]"
-                placeholder="Enter warden name"
-                required
-              />
-            </div>
-            <div>
-              <label className="block text-[10px] font-['Cinzel'] tracking-widest font-semibold text-gray-400 mb-1 uppercase">
-                WARDEN PHONE NUMBER
-              </label>
-              <input
-                type="tel"
-                maxLength="10"
-                name="wardenPhoneNo"
-                value={formData[memberType].wardenPhoneNo}
-                onChange={(e) => handleChange(e, memberType)}
-                className="w-full h-10 px-3 bg-black/40 border border-white/10 rounded-lg text-white text-xs outline-none focus:border-[#880A45]"
-                placeholder="10 digit number"
-                required
-              />
-            </div>
           </div>
         )}
       </div>
@@ -811,15 +765,10 @@ const Home = () => {
   );
 
   const renderRegistrationSuccess = () => (
-    <div className="min-h-screen bg-black flex flex-col font-['Plus_Jakarta_Sans'] select-none text-white relative overflow-hidden">
-      {/* Interactive Pitch Black Tech Background with Grid */}
+    <div className="min-h-screen bg-[#E3EED4] flex flex-col font-['Plus_Jakarta_Sans'] select-none text-[#0F2A1D] relative overflow-hidden">
       <FashionBackground />
 
       <main className="flex-grow flex items-center justify-center px-4 sm:px-8 py-16 sm:py-24 relative z-10">
-        {/* Abstract Ambient Glow Elements */}
-        <div className="absolute top-1/4 left-1/4 w-72 sm:w-96 h-72 sm:h-96 bg-[#880A45]/20 rounded-full blur-[120px] pointer-events-none" />
-        <div className="absolute bottom-1/4 right-1/4 w-72 sm:w-96 h-72 sm:h-96 bg-[#14216F]/20 rounded-full blur-[120px] pointer-events-none" />
-
         <motion.div 
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -827,51 +776,49 @@ const Home = () => {
           className="relative z-10 w-full max-w-4xl flex flex-col items-center text-center"
         >
           {/* Success Glowing Icon Badge */}
-          <div className="mb-8 relative flex items-center justify-center w-24 h-24 sm:w-28 sm:h-28 rounded-full bg-[#14216F]/20 backdrop-blur-2xl border border-[#880A45]/50 shadow-[0_0_35px_rgba(136,10,69,0.4)]">
-            <Check className="w-12 h-12 sm:w-14 sm:h-14 text-pink-300 drop-shadow-[0_0_15px_rgba(255,177,198,0.6)] stroke-[2.5]" />
+          <div className="mb-8 relative flex items-center justify-center w-24 h-24 sm:w-28 sm:h-28 rounded-full bg-[#0F2A1D] border-2 border-[#6B9071] shadow-lg">
+            <Check className="w-12 h-12 sm:w-14 sm:h-14 text-[#E3EED4] stroke-[2.5]" />
           </div>
 
           {/* Headline Statement */}
-          <h1 className="font-['Montserrat'] font-black text-3xl sm:text-5xl md:text-6xl text-white tracking-tight uppercase mb-3">
-            You're Threaded In!
+          <h1 className="font-['Montserrat'] font-black text-3xl sm:text-5xl md:text-6xl text-[#0F2A1D] tracking-tight uppercase mb-3">
+            You're Locked In!
           </h1>
-          <p className="font-['Playfair_Display'] text-sm sm:text-lg italic text-gray-300 max-w-2xl mx-auto mb-10 sm:mb-12 leading-relaxed px-4">
-            Your team registration for Threadathon 2026 is complete. The digital hackathon awaits your creative input.
+          <p className="font-['Montserrat'] text-sm sm:text-base font-semibold text-[#375534] max-w-2xl mx-auto mb-10 sm:mb-12 leading-relaxed px-4">
+            Your team registration for 10X AGENTHACK '26 is complete. The AI Agent hackathon awaits your creative input.
           </p>
 
           {/* Registration Details Glass Panel */}
-          <div className="w-full bg-[#0B0616]/85 backdrop-blur-2xl border border-white/15 rounded-2xl p-6 sm:p-8 mb-10 sm:mb-12 relative overflow-hidden border-t-2 border-t-[#880A45] shadow-[0_15px_40px_rgba(0,0,0,0.8)] text-left">
-            <div className="absolute -top-10 -right-10 w-32 h-32 bg-[#880A45]/20 blur-2xl rounded-full pointer-events-none" />
-            
-            <h2 className="font-['Cinzel'] text-xs sm:text-sm uppercase tracking-widest text-[#bbc3ff] font-bold mb-6 flex items-center gap-2">
-              <Sparkles className="w-4 h-4 text-[#880A45]" /> REGISTRATION DETAILS
+          <div className="w-full bg-[#0F2A1D] border border-[#6B9071]/30 rounded-2xl p-6 sm:p-8 mb-10 sm:mb-12 relative overflow-hidden shadow-lg text-left">
+            <h2 className="font-['Montserrat'] text-xs sm:text-sm uppercase tracking-widest text-[#E3EED4] font-bold mb-6 flex items-center gap-2">
+              <Sparkles className="w-4 h-4 text-[#6B9071]" /> REGISTRATION DETAILS
             </h2>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="flex flex-col gap-1.5 p-3 rounded-xl bg-white/5 border border-white/10">
-                <span className="font-['Cinzel'] text-[10px] uppercase tracking-wider text-gray-400 font-semibold">
+              <div className="flex flex-col gap-1.5 p-3.5 rounded-xl bg-[#07150E] border border-[#6B9071]/30">
+                <span className="font-['Montserrat'] text-[10px] uppercase tracking-wider text-[#AEC3B0] font-semibold">
                   TEAM NAME
                 </span>
-                <span className="font-['Montserrat'] font-bold text-white text-base sm:text-lg truncate">
+                <span className="font-['Montserrat'] font-bold text-[#E3EED4] text-base sm:text-lg truncate">
                   {completedTeamName || 'Registered Team'}
                 </span>
               </div>
 
-              <div className="flex flex-col gap-1.5 p-3 rounded-xl bg-white/5 border border-white/10">
-                <span className="font-['Cinzel'] text-[10px] uppercase tracking-wider text-gray-400 font-semibold">
+              <div className="flex flex-col gap-1.5 p-3.5 rounded-xl bg-[#07150E] border border-[#6B9071]/30">
+                <span className="font-['Montserrat'] text-[10px] uppercase tracking-wider text-[#AEC3B0] font-semibold">
                   TEAM LEADER NAME
                 </span>
-                <span className="font-['Montserrat'] font-bold text-white text-base sm:text-lg truncate">
-                  {completedTeamLeader || 'Lead Designer'}
+                <span className="font-['Montserrat'] font-bold text-[#E3EED4] text-base sm:text-lg truncate">
+                  {completedTeamLeader || 'Lead Participant'}
                 </span>
               </div>
 
-              <div className="flex flex-col gap-1.5 p-3 rounded-xl bg-white/5 border border-white/10">
-                <span className="font-['Cinzel'] text-[10px] uppercase tracking-wider text-gray-400 font-semibold">
+              <div className="flex flex-col gap-1.5 p-3.5 rounded-xl bg-[#07150E] border border-[#6B9071]/30">
+                <span className="font-['Montserrat'] text-[10px] uppercase tracking-wider text-[#AEC3B0] font-semibold">
                   TRANSACTION / UTR ID
                 </span>
                 <div className="flex items-center justify-between gap-2">
-                  <span className="font-mono text-pink-300 text-sm sm:text-base font-bold truncate">
+                  <span className="font-mono text-[#E3EED4] text-sm sm:text-base font-bold truncate">
                     {submittedTxnId || 'VERIFIED'}
                   </span>
                   {submittedTxnId && (
@@ -882,7 +829,7 @@ const Home = () => {
                         setCopiedTxn(true);
                         setTimeout(() => setCopiedTxn(false), 2000);
                       }}
-                      className="p-1 rounded-md text-gray-400 hover:text-white bg-white/10 hover:bg-white/20 transition cursor-pointer"
+                      className="p-1 rounded-md text-[#AEC3B0] hover:text-[#E3EED4] bg-[#375534]/50 hover:bg-[#375534] transition cursor-pointer"
                       title="Copy Transaction ID"
                     >
                       {copiedTxn ? <Check size={14} className="text-emerald-400" /> : <Layers size={14} />}
@@ -893,62 +840,28 @@ const Home = () => {
             </div>
           </div>
 
-          {/* What's Next Steps */}
-          <div className="w-full mb-10 sm:mb-12">
-            <h3 className="font-['Montserrat'] font-bold text-xl sm:text-2xl text-center mb-6 sm:mb-8 text-white uppercase tracking-tight">
+          {/* What's Next Steps - WhatsApp Only */}
+          <div className="w-full mb-10 sm:mb-12 max-w-md mx-auto">
+            <h3 className="font-['Montserrat'] font-bold text-xl sm:text-2xl text-center mb-6 text-[#0F2A1D] uppercase tracking-tight">
               What's Next?
             </h3>
             
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 relative">
-              {/* Step 1 */}
-              <a 
-                href="https://chat.whatsapp.com/CWIZynXu7jYKyNcNC57TkB" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="flex flex-col items-center text-center p-6 rounded-2xl bg-[#0B0616]/80 border border-white/15 hover:border-[#880A45]/60 hover:bg-[#0B0616] transition-all duration-300 shadow-md group cursor-pointer"
-              >
-                <div className="w-12 h-12 rounded-full bg-white/5 border border-white/15 flex items-center justify-center mb-4 group-hover:border-[#880A45] group-hover:bg-[#880A45]/20 transition-colors">
-                  <Users className="w-5 h-5 text-[#bbc3ff] group-hover:text-pink-300 transition-colors" />
-                </div>
-                <h4 className="font-['Cinzel'] text-xs uppercase tracking-wider font-bold text-white mb-2">
-                  Join Community
-                </h4>
-                <p className="text-xs text-gray-400 font-normal leading-relaxed">
-                  Connect with fellow fashion designers and event organizers on WhatsApp.
-                </p>
-              </a>
-
-              {/* Step 2 */}
-              <a 
-                href="https://chat.whatsapp.com/ICZrI8hAzOOJdi1ihbUtcn" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="flex flex-col items-center text-center p-6 rounded-2xl bg-[#0B0616]/80 border border-white/15 hover:border-[#880A45]/60 hover:bg-[#0B0616] transition-all duration-300 shadow-md group cursor-pointer"
-              >
-                <div className="w-12 h-12 rounded-full bg-white/5 border border-white/15 flex items-center justify-center mb-4 group-hover:border-[#880A45] group-hover:bg-[#880A45]/20 transition-colors">
-                  <Sparkles className="w-5 h-5 text-[#bbc3ff] group-hover:text-pink-300 transition-colors" />
-                </div>
-                <h4 className="font-['Cinzel'] text-xs uppercase tracking-wider font-bold text-white mb-2">
-                  Whatsapp Group
-                </h4>
-                <p className="text-xs text-gray-400 font-normal leading-relaxed">
-                  Join the whatsapp group for live updates and information.
-                </p>
-              </a>
-
-              {/* Step 3 */}
-              <div className="flex flex-col items-center text-center p-6 rounded-2xl bg-[#0B0616]/80 border border-white/15 transition-all duration-300 shadow-md">
-                <div className="w-12 h-12 rounded-full bg-white/5 border border-white/15 flex items-center justify-center mb-4">
-                  <ShieldCheck className="w-5 h-5 text-[#bbc3ff]" />
-                </div>
-                <h4 className="font-['Cinzel'] text-xs uppercase tracking-wider font-bold text-white mb-2">
-                  Prepare Team
-                </h4>
-                <p className="text-xs text-gray-400 font-normal leading-relaxed">
-                  Coordinate your team of 4 designers before the opening hackathon showcase.
-                </p>
+            <a 
+              href="https://chat.whatsapp.com/KeLm4xMCa3v5627TmAxyPx?s=qt&p=a&mlu=0" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="flex flex-col items-center text-center p-6 sm:p-8 rounded-2xl bg-[#0F2A1D] border border-[#6B9071]/40 hover:bg-[#375534] transition-all duration-300 shadow-md group cursor-pointer"
+            >
+              <div className="w-14 h-14 rounded-full bg-[#375534] border border-[#6B9071]/50 flex items-center justify-center mb-4 group-hover:bg-[#6B9071] transition-colors">
+                <Sparkles className="w-6 h-6 text-[#E3EED4]" />
               </div>
-            </div>
+              <h4 className="font-['Montserrat'] text-sm uppercase tracking-wider font-bold text-[#E3EED4] mb-2">
+                Join WhatsApp Group
+              </h4>
+              <p className="text-xs text-[#AEC3B0] font-normal leading-relaxed">
+                Join the official WhatsApp group for live updates, announcements, and hackathon information.
+              </p>
+            </a>
           </div>
 
           {/* Return Action */}
@@ -956,7 +869,7 @@ const Home = () => {
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
             onClick={() => navigate('/')}
-            className="bg-[#880A45] hover:bg-[#9E0D52] text-[#F2F0EA] font-['Cinzel'] text-xs sm:text-sm font-bold uppercase tracking-widest py-3.5 sm:py-4 px-10 rounded-xl transition-all duration-300 shadow-[0_0_30px_rgba(136,10,69,0.3)] inline-flex items-center gap-2.5 cursor-pointer border border-[#880A45]/50"
+            className="bg-[#0F2A1D] hover:bg-[#375534] text-[#E3EED4] font-['Montserrat'] text-xs sm:text-sm font-bold uppercase tracking-widest py-3.5 sm:py-4 px-10 rounded-xl transition-all duration-300 shadow-md inline-flex items-center gap-2.5 cursor-pointer border border-[#6B9071]/50"
           >
             <HomeIcon className="w-4 h-4" />
             <span>RETURN HOME</span>
@@ -1041,11 +954,11 @@ const Home = () => {
         
         {/* Page Header */}
         <div className="text-center mb-8 sm:mb-12">
-          <h1 className="font-['Montserrat'] font-black text-3xl sm:text-5xl md:text-6xl text-white tracking-tight uppercase mb-2 sm:mb-3 bg-gradient-to-r from-white via-rose-200 to-white bg-clip-text text-transparent">
+          <h1 className="font-['Montserrat'] font-black text-3xl sm:text-5xl md:text-6xl tracking-tight uppercase mb-2 sm:mb-3 bg-gradient-to-r from-[#F5F2EB] via-[#E5DFC9] to-[#8A9A5B] bg-clip-text text-transparent">
             Team Registration
           </h1>
-          <p className="font-['Playfair_Display'] text-xs sm:text-base italic text-gray-300 max-w-xl mx-auto leading-relaxed px-2">
-            Register your team for Threadathon 2026. Fill out all member details below and complete the entry payment to secure your hackathon spot.
+          <p className="font-['Playfair_Display'] text-xs sm:text-base italic text-[#D8CFB5] max-w-xl mx-auto leading-relaxed px-2">
+            Register your team for 10X AGENTHACK '26. Fill out all member details below and complete the entry payment to secure your hackathon spot.
           </p>
         </div>
 
@@ -1129,7 +1042,7 @@ const Home = () => {
             '02', 
             'teamLeader', 
             'Team Leader', 
-            'LEAD DESIGNER DETAILS', 
+            'LEAD PARTICIPANT DETAILS', 
             <Crown className="w-4 h-4 sm:w-5 sm:h-5" />
           )}
 
@@ -1139,7 +1052,7 @@ const Home = () => {
             '03', 
             'teamMember1', 
             'Team Member 1', 
-            'DESIGNER DETAILS', 
+            'PARTICIPANT DETAILS', 
             <Users className="w-4 h-4 sm:w-5 sm:h-5" />
           )}
 
@@ -1149,7 +1062,7 @@ const Home = () => {
             '04', 
             'teamMember2', 
             'Team Member 2', 
-            'DESIGNER DETAILS', 
+            'PARTICIPANT DETAILS', 
             <Users className="w-4 h-4 sm:w-5 sm:h-5" />
           )}
 
@@ -1159,7 +1072,7 @@ const Home = () => {
             '05', 
             'teamMember3', 
             'Team Member 3', 
-            'DESIGNER DETAILS', 
+            'PARTICIPANT DETAILS', 
             <Users className="w-4 h-4 sm:w-5 sm:h-5" />
           )}
 
@@ -1197,7 +1110,7 @@ const Home = () => {
                         ENTRY FEE BREAKDOWN
                       </span>
                       <span className="font-['Montserrat'] text-lg sm:text-xl font-bold text-white">
-                        ₹350 × 4 = ₹1,400 <span className="text-xs font-normal text-gray-400 font-sans">/ Team Pass</span>
+                        ₹300 × 4 = ₹1,200 <span className="text-xs font-normal text-gray-400 font-sans">/ Team Pass</span>
                       </span>
                     </div>
 
@@ -1211,7 +1124,7 @@ const Home = () => {
                     whileTap={{ scale: 0.98 }}
                     type="button"
                     onClick={handleProceedToPayment}
-                    className="w-full py-3.5 sm:py-4 px-6 rounded-xl font-['Cinzel'] font-bold text-xs sm:text-sm tracking-widest bg-gradient-to-r from-[#880A45] to-[#14216F] text-white shadow-lg flex items-center justify-center gap-2 cursor-pointer"
+                    className="w-full py-3.5 sm:py-4 px-6 rounded-xl font-['Montserrat'] font-bold text-xs sm:text-sm tracking-widest bg-[#0F2A1D] hover:bg-[#375534] text-[#E3EED4] border border-[#6B9071]/50 shadow-md flex items-center justify-center gap-2 cursor-pointer transition-all"
                   >
                     <span>PROCEED TO PAYMENT SCANNER</span>
                     <ArrowRight className="w-4 h-4" />
@@ -1223,7 +1136,7 @@ const Home = () => {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-6 items-center">
                     
                     {/* QR Code Scanner Display */}
-                    <div className="flex flex-col items-center p-4 sm:p-5 rounded-2xl bg-black/50 border border-white/12 text-center">
+                    <div className="flex flex-col items-center p-4 sm:p-5 rounded-2xl bg-[#07150E]/80 border border-[#6B9071]/30 text-center">
                       <div className="p-2.5 sm:p-3 bg-white rounded-2xl mb-3 shadow-md">
                         <img 
                           src={qrUrl} 
@@ -1231,7 +1144,7 @@ const Home = () => {
                           className="w-36 h-36 sm:w-44 sm:h-44 object-contain mx-auto"
                         />
                       </div>
-                      <span className="font-['Cinzel'] text-[11px] sm:text-xs font-bold text-gray-200">
+                      <span className="font-['Montserrat'] text-[11px] sm:text-xs font-bold text-[#E3EED4]">
                         SCAN VIA ANY UPI APP
                       </span>
                     </div>
@@ -1239,24 +1152,24 @@ const Home = () => {
                     {/* Transaction Details & Upload */}
                     <div className="space-y-3.5 sm:space-y-4">
                       <div>
-                        <label className="block text-[10px] font-['Cinzel'] tracking-widest font-semibold text-gray-300 mb-1.5 uppercase">
+                        <label className="block text-[10px] font-['Montserrat'] tracking-widest font-semibold text-[#AEC3B0] mb-1.5 uppercase">
                           TRANSACTION / UTR NUMBER
                         </label>
                         <input
                           type="text"
                           value={transactionId}
                           onChange={(e) => setTransactionId(e.target.value)}
-                          className={`w-full h-10 sm:h-11 px-3 sm:px-4 bg-black/60 border rounded-xl text-white font-mono text-xs outline-none transition ${
-                            txnExists ? 'border-rose-500' : 'border-white/15 focus:border-[#880A45]'
+                          className={`w-full h-10 sm:h-11 px-3 sm:px-4 bg-[#07150E]/90 border rounded-xl text-[#E3EED4] font-mono text-xs outline-none transition ${
+                            txnExists ? 'border-rose-500' : 'border-[#6B9071]/40 focus:border-[#6B9071]'
                           }`}
                           placeholder="e.g. 328492019482"
                           required
                         />
                         {isTxnChecking && transactionId.trim() && (
-                          <p className="text-[10px] font-['Cinzel'] text-gray-400 mt-1">VERIFYING TRANSACTION ID...</p>
+                          <p className="text-[10px] font-['Montserrat'] text-[#AEC3B0] mt-1">VERIFYING TRANSACTION ID...</p>
                         )}
                         {!isTxnChecking && txnCheckMessage && (
-                          <p className={`text-[10px] font-['Cinzel'] mt-1 flex items-center gap-1 font-bold ${
+                          <p className={`text-[10px] font-['Montserrat'] mt-1 flex items-center gap-1 font-bold ${
                             txnExists ? 'text-rose-400' : 'text-emerald-400'
                           }`}>
                             {txnExists ? <AlertTriangle size={12} /> : <Check size={12} />}
@@ -1266,17 +1179,17 @@ const Home = () => {
                       </div>
 
                       <div>
-                        <label className="block text-[10px] font-['Cinzel'] tracking-widest font-semibold text-gray-300 mb-1.5 uppercase">
+                        <label className="block text-[10px] font-['Montserrat'] tracking-widest font-semibold text-[#AEC3B0] mb-1.5 uppercase">
                           PAYMENT RECEIPT (SCREENSHOT)
                         </label>
                         <input
                           type="file"
                           accept="image/*"
                           onChange={(e) => setReceiptFile(e.target.files?.[0] || null)}
-                          className="w-full text-xs text-gray-400 file:mr-2.5 sm:file:mr-3 file:py-1.5 sm:file:py-2 file:px-3 sm:file:px-4 file:rounded-xl file:border-0 file:text-[11px] sm:file:text-xs file:font-['Cinzel'] file:font-bold file:bg-[#880A45] file:text-white hover:file:bg-[#9E0D52] cursor-pointer bg-black/60 border border-white/15 p-1.5 sm:p-2 rounded-xl"
+                          className="w-full text-xs text-[#AEC3B0] file:mr-2.5 sm:file:mr-3 file:py-1.5 sm:file:py-2 file:px-3 sm:file:px-4 file:rounded-xl file:border-0 file:text-[11px] sm:file:text-xs file:font-['Montserrat'] file:font-bold file:bg-[#0F2A1D] file:text-[#E3EED4] hover:file:bg-[#375534] cursor-pointer bg-[#07150E]/90 border border-[#6B9071]/30 p-1.5 sm:p-2 rounded-xl"
                           required
                         />
-                        <p className="text-[10px] font-['Cinzel'] text-gray-400 mt-1.5 tracking-wider">
+                        <p className="text-[10px] font-['Montserrat'] text-[#AEC3B0] mt-1.5 tracking-wider">
                           *MAXIMUM FILE SIZE: 10MB
                         </p>
                       </div>
@@ -1285,7 +1198,7 @@ const Home = () => {
                         <button
                           type="button"
                           onClick={() => setShowPayment(false)}
-                          className="w-full sm:w-1/3 py-2.5 sm:py-3 rounded-xl font-['Cinzel'] text-xs font-semibold bg-white/10 hover:bg-white/15 text-gray-300 border border-white/15 cursor-pointer"
+                          className="w-full sm:w-1/3 py-2.5 sm:py-3 rounded-xl font-['Montserrat'] text-xs font-semibold bg-[#AEC3B0]/20 hover:bg-[#AEC3B0]/30 text-[#E3EED4] border border-[#6B9071]/30 cursor-pointer transition-colors"
                         >
                           EDIT TEAM
                         </button>
@@ -1294,7 +1207,7 @@ const Home = () => {
                           whileTap={{ scale: 0.98 }}
                           type="submit"
                           disabled={loading}
-                          className="w-full sm:w-2/3 py-2.5 sm:py-3 rounded-xl font-['Cinzel'] text-xs font-bold tracking-widest bg-gradient-to-r from-[#880A45] to-[#14216F] text-white shadow-lg cursor-pointer flex items-center justify-center gap-2"
+                          className="w-full sm:w-2/3 py-2.5 sm:py-3 rounded-xl font-['Montserrat'] text-xs font-bold tracking-widest bg-[#0F2A1D] hover:bg-[#375534] text-[#E3EED4] border border-[#6B9071]/50 shadow-md cursor-pointer flex items-center justify-center gap-2 transition-all"
                         >
                           {loading ? 'SUBMITTING...' : 'COMPLETE REGISTRATION »'}
                         </motion.button>

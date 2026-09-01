@@ -325,7 +325,7 @@ function Marks() {
   }, [filteredTeams]);
 
   const getRankMedal = (rankIndex) => {
-    if (rankIndex === 0) return { label: "👑 GRAND DESIGNER (1ST)", color: "bg-gradient-to-r from-[#880A45] to-[#14216F] text-white font-bold" };
+    if (rankIndex === 0) return { label: "👑 GRAND DESIGNER (1ST)", color: "bg-gradient-to-r from-[#556B2F] to-[#708238] text-white font-bold" };
     if (rankIndex === 1) return { label: "✦ PREMIER HACKATHON (2ND)", color: "bg-white/10 text-white border border-white/20 font-bold" };
     if (rankIndex === 2) return { label: "✦ 2ND RUNNER UP (3RD)", color: "bg-white/5 text-gray-300 border border-white/10 font-bold" };
     return null;
@@ -344,7 +344,7 @@ function Marks() {
             animate={{ scale: 1, opacity: 1 }}
             className="relative w-full max-w-lg bg-[#0B0616]/90 backdrop-blur-2xl border border-white/20 rounded-3xl p-6 sm:p-10 shadow-[0_25px_60px_rgba(0,0,0,0.95)] text-center overflow-hidden"
           >
-            <div className="absolute top-0 right-0 bg-gradient-to-r from-[#880A45] to-[#14216F] text-white border-b border-l border-white/20 px-4 py-1.5 font-['Cinzel'] text-xs tracking-widest font-bold rounded-tr-3xl shadow-sm">
+            <div className="absolute top-0 right-0 bg-gradient-to-r from-[#556B2F] to-[#708238] text-white border-b border-l border-white/20 px-4 py-1.5 font-['Cinzel'] text-xs tracking-widest font-bold rounded-tr-3xl shadow-sm">
               JURY AUTHENTICATION
             </div>
 
@@ -396,7 +396,7 @@ function Marks() {
                 whileTap={{ scale: 0.98 }}
                 type="submit"
                 disabled={authenticating}
-                className="w-full h-12 rounded-xl font-['Cinzel'] font-bold text-xs tracking-widest bg-gradient-to-r from-[#880A45] to-[#14216F] text-white shadow-md hover:shadow-lg transition-all cursor-pointer flex items-center justify-center gap-2 uppercase"
+                className="w-full h-12 rounded-xl font-['Cinzel'] font-bold text-xs tracking-widest bg-gradient-to-r from-[#556B2F] to-[#708238] text-white shadow-md hover:shadow-lg transition-all cursor-pointer flex items-center justify-center gap-2 uppercase"
               >
                 {authenticating ? "OPENING JURY VAULT..." : "ENTER JURY ARENA »"}
               </motion.button>
@@ -464,7 +464,7 @@ function Marks() {
             <button
               type="button"
               onClick={() => setShowModal(true)}
-              className="px-4 sm:px-5 py-2 rounded-xl bg-gradient-to-r from-[#880A45] to-[#14216F] hover:opacity-90 text-white transition-all shadow-md uppercase tracking-wider flex items-center gap-2 cursor-pointer border border-[#880A45]/50"
+              className="px-4 sm:px-5 py-2 rounded-xl bg-gradient-to-r from-[#556B2F] to-[#708238] hover:opacity-90 text-white transition-all shadow-md uppercase tracking-wider flex items-center gap-2 cursor-pointer border border-[#880A45]/50"
             >
               <Plus className="h-3.5 w-3.5" />
               Create Round
@@ -490,7 +490,7 @@ function Marks() {
         {/* HACKATHON PODIUM SCOREBOARD */}
         {podium.length > 0 && (
           <div className="bg-[#0B0616]/90 backdrop-blur-2xl border border-white/15 rounded-2xl p-5 sm:p-6 shadow-[0_12px_35px_rgba(0,0,0,0.85)] relative mb-8 text-left">
-            <div className="absolute -top-3 left-6 bg-gradient-to-r from-[#880A45] to-[#14216F] text-white px-3.5 py-0.5 rounded-lg text-[10px] font-['Cinzel'] font-bold uppercase tracking-widest border border-white/20 shadow-[0_0_15px_rgba(136,10,69,0.4)]">
+            <div className="absolute -top-3 left-6 bg-gradient-to-r from-[#556B2F] to-[#708238] text-white px-3.5 py-0.5 rounded-lg text-[10px] font-['Cinzel'] font-bold uppercase tracking-widest border border-white/20 shadow-[0_0_15px_rgba(136,10,69,0.4)]">
               Hackathon Podium
             </div>
 
@@ -541,7 +541,7 @@ function Marks() {
 
         {/* Dynamic Rounds Selector Tabs */}
         <div className="bg-[#0B0616]/90 backdrop-blur-2xl border border-white/15 rounded-2xl p-5 sm:p-6 shadow-[0_12px_35px_rgba(0,0,0,0.85)] mb-8 text-left relative">
-          <div className="absolute -top-3 left-6 bg-gradient-to-r from-[#880A45] to-[#14216F] text-white px-3.5 py-0.5 rounded-lg text-[10px] font-['Cinzel'] font-bold uppercase tracking-widest border border-white/20 shadow-[0_0_15px_rgba(136,10,69,0.4)]">
+          <div className="absolute -top-3 left-6 bg-gradient-to-r from-[#556B2F] to-[#708238] text-white px-3.5 py-0.5 rounded-lg text-[10px] font-['Cinzel'] font-bold uppercase tracking-widest border border-white/20 shadow-[0_0_15px_rgba(136,10,69,0.4)]">
             Active Stage Select
           </div>
 
@@ -565,7 +565,7 @@ function Marks() {
                       onClick={() => setSelectedRound(round)}
                       className={`px-5 py-2 rounded-xl cursor-pointer transition-all uppercase tracking-wider ${
                         isSelected
-                          ? 'bg-gradient-to-r from-[#880A45] to-[#14216F] text-white shadow-md border border-[#880A45]/50'
+                          ? 'bg-gradient-to-r from-[#556B2F] to-[#708238] text-white shadow-md border border-[#880A45]/50'
                           : 'bg-white/5 text-gray-300 border border-white/10 hover:bg-white/10'
                       }`}
                     >
@@ -657,7 +657,7 @@ function Marks() {
                         onClick={() => setSelectedTheme(theme)}
                         className={`px-3 py-1 rounded-full transition-all cursor-pointer font-['Cinzel'] text-[10px] font-bold ${
                           isSelected
-                            ? 'bg-gradient-to-r from-[#880A45] to-[#14216F] text-white shadow-sm'
+                            ? 'bg-gradient-to-r from-[#556B2F] to-[#708238] text-white shadow-sm'
                             : 'bg-white/5 text-gray-300 hover:bg-white/10 border border-white/10'
                         }`}
                       >
@@ -767,7 +767,7 @@ function Marks() {
               className="relative max-w-md w-full bg-[#0B0616]/95 backdrop-blur-2xl border border-white/20 p-6 sm:p-8 rounded-3xl shadow-2xl text-left"
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="absolute -top-3.5 left-6 bg-gradient-to-r from-[#880A45] to-[#14216F] text-white font-['Cinzel'] text-[10px] font-bold tracking-widest px-3 py-0.5 rounded-lg shadow-sm">
+              <div className="absolute -top-3.5 left-6 bg-gradient-to-r from-[#556B2F] to-[#708238] text-white font-['Cinzel'] text-[10px] font-bold tracking-widest px-3 py-0.5 rounded-lg shadow-sm">
                 NEW EVALUATION STAGE
               </div>
               <button
@@ -816,7 +816,7 @@ function Marks() {
                   whileTap={{ scale: 0.98 }}
                   onClick={handleCreateRound}
                   disabled={saving}
-                  className="w-full h-12 rounded-xl bg-gradient-to-r from-[#880A45] to-[#14216F] text-white font-['Cinzel'] font-bold tracking-widest uppercase transition cursor-pointer shadow-md"
+                  className="w-full h-12 rounded-xl bg-gradient-to-r from-[#556B2F] to-[#708238] text-white font-['Cinzel'] font-bold tracking-widest uppercase transition cursor-pointer shadow-md"
                 >
                   {saving ? "INITIALIZING STAGE..." : "ESTABLISH ROUND »"}
                 </motion.button>
@@ -837,7 +837,7 @@ function Marks() {
               className="relative max-w-md w-full bg-[#0B0616]/95 backdrop-blur-2xl border border-white/20 p-6 sm:p-8 rounded-3xl shadow-2xl text-left"
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="absolute -top-3.5 left-6 bg-gradient-to-r from-[#880A45] to-[#14216F] text-white font-['Cinzel'] text-[10px] font-bold tracking-widest px-3 py-0.5 rounded-lg shadow-sm">
+              <div className="absolute -top-3.5 left-6 bg-gradient-to-r from-[#556B2F] to-[#708238] text-white font-['Cinzel'] text-[10px] font-bold tracking-widest px-3 py-0.5 rounded-lg shadow-sm">
                 EDIT STAGE
               </div>
               <button

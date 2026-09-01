@@ -518,8 +518,8 @@ const Download = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-black flex flex-col font-['Plus_Jakarta_Sans'] select-none pb-16 text-[#fdf3f7] relative overflow-x-hidden">
-      {/* Pitch Black Fashion Tech Background */}
+    <div className="min-h-screen bg-[#E3EED4] flex flex-col font-['Plus_Jakarta_Sans'] select-none pb-16 text-[#0F2A1D] relative overflow-x-hidden">
+      {/* Background Component */}
       <FashionBackground />
 
       <Navbar />
@@ -527,24 +527,24 @@ const Download = () => {
       {/* Image Modal Lightbox */}
       <AnimatePresence>
         {isModalOpen && modalImage && (
-          <div className="fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-4">
+          <div className="fixed inset-0 bg-[#0F2A1D]/80 backdrop-blur-md z-50 flex items-center justify-center p-4">
             <motion.div
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
-              className="relative max-w-xl w-full bg-[#0B0616]/95 backdrop-blur-2xl border border-white/20 p-6 rounded-3xl shadow-2xl text-center"
+              className="relative max-w-xl w-full bg-[#0F2A1D] border border-[#6B9071]/40 p-6 rounded-3xl shadow-2xl text-center"
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="absolute -top-3.5 left-6 bg-gradient-to-r from-[#880A45] to-[#14216F] text-white font-['Cinzel'] text-[10px] font-bold tracking-widest px-3 py-0.5 rounded-lg shadow-sm">
+              <div className="absolute -top-3.5 left-6 bg-[#375534] text-[#E3EED4] font-['Montserrat'] text-[10px] font-bold tracking-widest px-3 py-0.5 rounded-lg shadow-sm border border-[#6B9071]/40">
                 RECEIPT PROOF
               </div>
               <button
                 onClick={closeImageModal}
-                className="absolute -top-3.5 right-4 bg-black/80 text-gray-300 border border-white/20 font-['Cinzel'] text-[10px] font-bold px-3 py-1 rounded-lg shadow-sm cursor-pointer hover:bg-white/10 transition"
+                className="absolute -top-3.5 right-4 bg-[#07150E] text-[#AEC3B0] border border-[#6B9071]/40 font-['Montserrat'] text-[10px] font-bold px-3 py-1 rounded-lg shadow-sm cursor-pointer hover:bg-[#375534] hover:text-[#E3EED4] transition"
               >
                 ✕ CLOSE
               </button>
-              <div className="border border-white/15 rounded-2xl overflow-hidden mt-4 bg-black/80 p-2 shadow-inner">
+              <div className="border border-[#6B9071]/30 rounded-2xl overflow-hidden mt-4 bg-[#07150E] p-2 shadow-inner">
                 <img
                   src={modalImage}
                   alt="Receipt full view"
@@ -559,22 +559,19 @@ const Download = () => {
       {/* Full-Page Expanded Main Canvas */}
       <div className="flex-grow w-full px-4 sm:px-8 md:px-12 pt-24 sm:pt-28 relative z-10">
 
-        {/* TopHeader Bar with [#880A45] -> [#14216F] Ambient Glow */}
-        <header className="bg-[#0B0616]/90 backdrop-blur-2xl border border-white/15 rounded-2xl p-5 sm:p-6 mb-8 flex flex-col md:flex-row justify-between items-start md:items-center relative overflow-hidden shadow-[0_12px_35px_rgba(0,0,0,0.85)] text-left">
-          <div className="absolute -top-20 -left-20 w-72 h-72 bg-[#880A45]/30 rounded-full blur-[90px] pointer-events-none" />
-          <div className="absolute -bottom-20 right-0 w-72 h-72 bg-[#14216F]/30 rounded-full blur-[90px] pointer-events-none" />
-
+        {/* Top Header Bar */}
+        <header className="bg-[#0F2A1D] border border-[#6B9071]/30 rounded-2xl p-5 sm:p-6 mb-8 flex flex-col md:flex-row justify-between items-start md:items-center relative overflow-hidden shadow-lg text-left">
           <div className="relative z-10">
-            <h1 className="text-2xl sm:text-3xl md:text-4xl font-['Montserrat'] font-black tracking-tight uppercase mb-1 text-white">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-['Montserrat'] font-extrabold tracking-tight uppercase mb-1 text-[#E3EED4]">
               EXECUTIVE CONSOLE
             </h1>
-            <p className="bg-gradient-to-r from-pink-300 via-rose-200 to-indigo-300 bg-clip-text text-transparent font-['Cinzel'] text-xs tracking-widest font-bold uppercase">
+            <p className="text-[#AEC3B0] font-['Montserrat'] text-xs tracking-widest font-semibold uppercase">
               Categorized Excel Registry Hub & Pass Verification
             </p>
           </div>
 
           {/* Tab Selector Buttons in Header */}
-          <div className="flex flex-wrap gap-2.5 mt-4 md:mt-0 relative z-10 font-['Cinzel'] text-xs font-bold">
+          <div className="flex flex-wrap gap-2.5 mt-4 md:mt-0 relative z-10 font-['Montserrat'] text-xs font-bold">
             <button
               type="button"
               onClick={() => {
@@ -584,11 +581,11 @@ const Download = () => {
               }}
               className={`px-4 sm:px-5 py-2 rounded-xl transition-all cursor-pointer uppercase tracking-wider flex items-center gap-1.5 ${
                 tab === 'download'
-                  ? 'bg-gradient-to-r from-[#880A45] to-[#14216F] text-white shadow-md border border-[#880A45]/50'
-                  : 'bg-white/5 text-gray-300 border border-white/15 hover:bg-white/10'
+                  ? 'bg-[#375534] text-[#E3EED4] shadow-md border border-[#6B9071]/60'
+                  : 'bg-[#07150E]/60 text-[#AEC3B0] border border-[#6B9071]/30 hover:bg-[#375534]/50 hover:text-[#E3EED4]'
               }`}
             >
-              <FileSpreadsheet className="w-3.5 h-3.5" />
+              <FileSpreadsheet className="w-3.5 h-3.5 text-[#6B9071]" />
               Excel Export Hub
             </button>
             <button
@@ -600,11 +597,11 @@ const Download = () => {
               }}
               className={`px-4 sm:px-5 py-2 rounded-xl transition-all cursor-pointer uppercase tracking-wider flex items-center gap-1.5 ${
                 tab === 'status'
-                  ? 'bg-gradient-to-r from-[#880A45] to-[#14216F] text-white shadow-md border border-[#880A45]/50'
-                  : 'bg-white/5 text-gray-300 border border-white/15 hover:bg-white/10'
+                  ? 'bg-[#375534] text-[#E3EED4] shadow-md border border-[#6B9071]/60'
+                  : 'bg-[#07150E]/60 text-[#AEC3B0] border border-[#6B9071]/30 hover:bg-[#375534]/50 hover:text-[#E3EED4]'
               }`}
             >
-              <Shield className="w-3.5 h-3.5" />
+              <Shield className="w-3.5 h-3.5 text-[#6B9071]" />
               Verify Passes
             </button>
           </div>
@@ -617,7 +614,7 @@ const Download = () => {
               initial={{ scale: 0.98, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="mb-5 bg-rose-950/80 border border-rose-500/40 rounded-2xl p-4 text-rose-200 font-['Cinzel'] text-xs tracking-wide shadow-md flex items-center gap-2.5 text-left"
+              className="mb-5 bg-rose-950/90 border border-rose-500/40 rounded-2xl p-4 text-rose-200 font-['Montserrat'] text-xs tracking-wide shadow-md flex items-center gap-2.5 text-left"
             >
               <AlertTriangle size={18} className="text-rose-400 flex-shrink-0" />
               <span>{error}</span>
@@ -632,9 +629,9 @@ const Download = () => {
               initial={{ scale: 0.98, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="mb-5 bg-emerald-950/80 border border-emerald-500/40 rounded-2xl p-4 text-emerald-200 font-['Cinzel'] text-xs tracking-wide shadow-md flex items-center gap-2.5 text-left"
+              className="mb-5 bg-[#375534] border border-[#6B9071]/60 rounded-2xl p-4 text-[#E3EED4] font-['Montserrat'] text-xs tracking-wide shadow-md flex items-center gap-2.5 text-left"
             >
-              <Check size={18} className="text-emerald-400 flex-shrink-0" />
+              <Check size={18} className="text-[#6B9071] flex-shrink-0" />
               <span>{success}</span>
             </motion.div>
           )}
@@ -646,30 +643,30 @@ const Download = () => {
 
             {/* Authentication Gate for Downloads */}
             {!isDownloadAuthorized ? (
-              <div className="bg-[#0B0616]/90 backdrop-blur-2xl border border-white/15 rounded-2xl p-6 sm:p-10 shadow-[0_12px_35px_rgba(0,0,0,0.85)] relative text-center max-w-xl mx-auto">
-                <div className="absolute -top-3 left-6 bg-gradient-to-r from-[#880A45] to-[#14216F] text-white px-3.5 py-0.5 rounded-lg text-[10px] font-['Cinzel'] font-bold uppercase tracking-widest border border-white/20 shadow-[0_0_15px_rgba(136,10,69,0.4)]">
+              <div className="bg-[#0F2A1D] border border-[#6B9071]/30 rounded-2xl p-6 sm:p-10 shadow-lg relative text-center max-w-xl mx-auto">
+                <div className="absolute -top-3 left-6 bg-[#375534] text-[#E3EED4] px-3.5 py-0.5 rounded-lg text-[10px] font-['Montserrat'] font-bold uppercase tracking-widest border border-[#6B9071]/40 shadow-md">
                   Excel Registry Vault
                 </div>
 
                 <div className="text-center mb-6 mt-2 flex flex-col items-center">
-                  <h2 className="text-xl sm:text-2xl font-['Montserrat'] font-bold text-white uppercase mb-1">
+                  <h2 className="text-xl sm:text-2xl font-['Montserrat'] font-bold text-[#E3EED4] uppercase mb-1">
                     AUTHENTICATE EXCEL HUB
                   </h2>
-                  <p className="text-xs text-gray-300 font-normal">
+                  <p className="text-xs text-[#AEC3B0] font-normal">
                     Enter your administrative passcode to unlock categorized student & team Excel downloads.
                   </p>
                 </div>
 
                 <form onSubmit={handleUnlockDownloadTools} className="space-y-4 max-w-sm mx-auto text-left">
                   <div>
-                    <label className="block text-[10px] font-['Cinzel'] font-semibold tracking-widest text-gray-300 mb-1.5 uppercase">
+                    <label className="block text-[10px] font-['Montserrat'] font-semibold tracking-widest text-[#AEC3B0] mb-1.5 uppercase">
                       ADMINISTRATIVE ACCESS KEY
                     </label>
                     <input
                       type="password"
                       value={downloadPassword}
                       onChange={(e) => setDownloadPassword(e.target.value)}
-                      className="w-full h-11 bg-black/60 border border-white/15 rounded-xl px-4 focus:border-[#880A45] outline-none transition font-medium text-xs text-white"
+                      className="w-full h-11 bg-[#07150E] border border-[#6B9071]/30 rounded-xl px-4 focus:border-[#6B9071] outline-none transition font-medium text-xs text-[#E3EED4]"
                       placeholder="Enter administrator key"
                       required
                     />
@@ -680,7 +677,7 @@ const Download = () => {
                     whileTap={{ scale: 0.98 }}
                     type="submit"
                     disabled={loading}
-                    className="w-full h-12 rounded-xl font-['Cinzel'] font-bold text-xs tracking-widest bg-gradient-to-r from-[#880A45] to-[#14216F] text-white shadow-md hover:shadow-lg transition-all cursor-pointer flex items-center justify-center gap-2 uppercase"
+                    className="w-full h-12 rounded-xl font-['Montserrat'] font-bold text-xs tracking-widest bg-[#0F2A1D] hover:bg-[#375534] text-[#E3EED4] border border-[#6B9071]/50 shadow-md transition-all cursor-pointer flex items-center justify-center gap-2 uppercase"
                   >
                     {loading ? 'AUTHENTICATING...' : 'UNLOCK EXCEL HUB »'}
                   </motion.button>
@@ -692,13 +689,13 @@ const Download = () => {
 
                 {/* Top Metrics Banner */}
                 {stats && (
-                  <div className="bg-[#0B0616]/90 backdrop-blur-2xl border border-white/15 rounded-2xl p-5 sm:p-6 shadow-[0_12px_35px_rgba(0,0,0,0.85)] relative text-left">
+                  <div className="bg-[#0F2A1D] border border-[#6B9071]/30 rounded-2xl p-5 sm:p-6 shadow-lg relative text-left">
                     <div className="flex flex-wrap items-center justify-between gap-4 mb-4">
                       <div>
-                        <h3 className="text-lg sm:text-xl font-['Montserrat'] font-bold text-white uppercase">
+                        <h3 className="text-lg sm:text-xl font-['Montserrat'] font-bold text-[#E3EED4] uppercase">
                           STUDENT DEMOGRAPHICS BREAKDOWN
                         </h3>
-                        <p className="text-xs text-gray-300 font-normal">
+                        <p className="text-xs text-[#AEC3B0] font-normal">
                           Live counts of registered teams and members across residence & gender categories.
                         </p>
                       </div>
@@ -706,7 +703,7 @@ const Download = () => {
                         type="button"
                         onClick={() => fetchDownloadStats()}
                         disabled={isLoadingStats}
-                        className="px-4 py-1.5 rounded-xl bg-white/5 hover:bg-white/10 text-gray-300 border border-white/15 text-xs font-['Cinzel'] font-bold uppercase tracking-wider flex items-center gap-1.5 cursor-pointer transition"
+                        className="px-4 py-1.5 rounded-xl bg-[#375534] hover:bg-[#6B9071] text-[#E3EED4] border border-[#6B9071]/40 text-xs font-['Montserrat'] font-bold uppercase tracking-wider flex items-center gap-1.5 cursor-pointer transition"
                       >
                         <RotateCw size={12} className={isLoadingStats ? 'animate-spin' : ''} />
                         Refresh Counts
@@ -714,29 +711,29 @@ const Download = () => {
                     </div>
 
                     <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
-                      <div className="bg-black/60 border border-white/15 rounded-xl p-3 text-center">
-                        <p className="text-xl font-bold font-['Montserrat'] text-white">{stats.totalTeams}</p>
-                        <p className="text-[9px] font-['Cinzel'] font-bold text-gray-400 uppercase tracking-wider">Total Teams</p>
+                      <div className="bg-[#07150E] border border-[#6B9071]/30 rounded-xl p-3 text-center">
+                        <p className="text-xl font-bold font-['Montserrat'] text-[#E3EED4]">{stats.totalTeams}</p>
+                        <p className="text-[9px] font-['Montserrat'] font-bold text-[#AEC3B0] uppercase tracking-wider">Total Teams</p>
                       </div>
-                      <div className="bg-black/60 border border-white/15 rounded-xl p-3 text-center">
-                        <p className="text-xl font-bold font-['Montserrat'] text-pink-300">{stats.totalStudents}</p>
-                        <p className="text-[9px] font-['Cinzel'] font-bold text-pink-200 uppercase tracking-wider">Total Members</p>
+                      <div className="bg-[#07150E] border border-[#6B9071]/30 rounded-xl p-3 text-center">
+                        <p className="text-xl font-bold font-['Montserrat'] text-[#AEC3B0]">{stats.totalStudents}</p>
+                        <p className="text-[9px] font-['Montserrat'] font-bold text-[#AEC3B0] uppercase tracking-wider">Total Members</p>
                       </div>
-                      <div className="bg-black/60 border border-rose-500/30 rounded-xl p-3 text-center">
-                        <p className="text-xl font-bold font-['Montserrat'] text-rose-300">{stats.hostelGirls}</p>
-                        <p className="text-[9px] font-['Cinzel'] font-bold text-rose-200 uppercase tracking-wider">Hostel Girls</p>
+                      <div className="bg-[#07150E] border border-[#6B9071]/30 rounded-xl p-3 text-center">
+                        <p className="text-xl font-bold font-['Montserrat'] text-[#E3EED4]">{stats.hostelGirls}</p>
+                        <p className="text-[9px] font-['Montserrat'] font-bold text-[#AEC3B0] uppercase tracking-wider">Hostel Girls</p>
                       </div>
-                      <div className="bg-black/60 border border-indigo-500/30 rounded-xl p-3 text-center">
-                        <p className="text-xl font-bold font-['Montserrat'] text-indigo-300">{stats.hostelBoys}</p>
-                        <p className="text-[9px] font-['Cinzel'] font-bold text-indigo-200 uppercase tracking-wider">Hostel Boys</p>
+                      <div className="bg-[#07150E] border border-[#6B9071]/30 rounded-xl p-3 text-center">
+                        <p className="text-xl font-bold font-['Montserrat'] text-[#E3EED4]">{stats.hostelBoys}</p>
+                        <p className="text-[9px] font-['Montserrat'] font-bold text-[#AEC3B0] uppercase tracking-wider">Hostel Boys</p>
                       </div>
-                      <div className="bg-black/60 border border-amber-500/30 rounded-xl p-3 text-center">
-                        <p className="text-xl font-bold font-['Montserrat'] text-amber-300">{stats.dayScholarGirls}</p>
-                        <p className="text-[9px] font-['Cinzel'] font-bold text-amber-200 uppercase tracking-wider">Day Scholar Girls</p>
+                      <div className="bg-[#07150E] border border-[#6B9071]/30 rounded-xl p-3 text-center">
+                        <p className="text-xl font-bold font-['Montserrat'] text-[#E3EED4]">{stats.dayScholarGirls}</p>
+                        <p className="text-[9px] font-['Montserrat'] font-bold text-[#AEC3B0] uppercase tracking-wider">Day Scholar Girls</p>
                       </div>
-                      <div className="bg-black/60 border border-emerald-500/30 rounded-xl p-3 text-center">
-                        <p className="text-xl font-bold font-['Montserrat'] text-emerald-300">{stats.dayScholarBoys}</p>
-                        <p className="text-[9px] font-['Cinzel'] font-bold text-emerald-200 uppercase tracking-wider">Day Scholar Boys</p>
+                      <div className="bg-[#07150E] border border-[#6B9071]/30 rounded-xl p-3 text-center">
+                        <p className="text-xl font-bold font-['Montserrat'] text-[#E3EED4]">{stats.dayScholarBoys}</p>
+                        <p className="text-[9px] font-['Montserrat'] font-bold text-[#AEC3B0] uppercase tracking-wider">Day Scholar Boys</p>
                       </div>
                     </div>
                   </div>
@@ -751,24 +748,24 @@ const Download = () => {
                     return (
                       <div
                         key={card.id}
-                        className={`backdrop-blur-2xl rounded-2xl p-6 flex flex-col justify-between shadow-[0_12px_35px_rgba(0,0,0,0.85)] relative transition-all ${
+                        className={`rounded-2xl p-6 flex flex-col justify-between shadow-lg relative transition-all bg-[#0F2A1D] border ${
                           card.highlight
-                            ? 'bg-[#180D22]/95 border-l-4 border-l-[#880A45] border-t border-r border-b border-[#880A45]/40 shadow-[0_0_25px_rgba(136,10,69,0.2)] md:col-span-2 lg:col-span-1'
-                            : 'bg-[#0B0616]/90 border border-white/15 hover:border-white/25'
+                            ? 'border-2 border-[#6B9071]'
+                            : 'border-[#6B9071]/30 hover:border-[#6B9071]/60'
                         }`}
                       >
                         {/* Top Badge */}
                         <div className="flex justify-between items-start mb-3">
-                          <span className={`font-['Cinzel'] text-[10px] font-bold px-3 py-0.5 rounded-full uppercase tracking-wider ${
+                          <span className={`font-['Montserrat'] text-[10px] font-bold px-3 py-0.5 rounded-full uppercase tracking-wider ${
                             card.highlight
-                              ? 'bg-gradient-to-r from-[#880A45] to-[#14216F] text-white shadow-sm'
-                              : 'bg-[#880A45]/30 text-pink-300 border border-[#880A45]/50'
+                              ? 'bg-[#375534] text-[#E3EED4] shadow-sm'
+                              : 'bg-[#375534]/50 text-[#AEC3B0] border border-[#6B9071]/40'
                           }`}>
                             {card.tag}
                           </span>
 
                           {card.count && (
-                            <span className="text-[11px] font-mono font-bold text-gray-300 bg-white/5 border border-white/10 px-2.5 py-0.5 rounded-lg">
+                            <span className="text-[11px] font-mono font-bold text-[#E3EED4] bg-[#07150E] border border-[#6B9071]/30 px-2.5 py-0.5 rounded-lg">
                               {card.count}
                             </span>
                           )}
@@ -776,11 +773,11 @@ const Download = () => {
 
                         {/* Title & Description */}
                         <div className="space-y-2 mb-6">
-                          <h3 className="text-lg sm:text-xl font-['Montserrat'] font-bold text-white uppercase flex items-center gap-2">
-                            <IconComponent className="w-5 h-5 text-pink-300 flex-shrink-0" />
+                          <h3 className="text-lg sm:text-xl font-['Montserrat'] font-bold text-[#E3EED4] uppercase flex items-center gap-2">
+                            <IconComponent className="w-5 h-5 text-[#6B9071] flex-shrink-0" />
                             <span>{card.title}</span>
                           </h3>
-                          <p className="text-xs text-gray-300 font-normal leading-relaxed">
+                          <p className="text-xs text-[#AEC3B0] font-normal leading-relaxed">
                             {card.description}
                           </p>
                         </div>
@@ -793,13 +790,9 @@ const Download = () => {
                             type="button"
                             disabled={Boolean(downloadingCategory)}
                             onClick={() => handleDownloadCategory(card.category, card.fileName)}
-                            className={`w-full py-3 px-4 rounded-xl font-['Cinzel'] font-bold text-xs tracking-wider uppercase transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer ${
-                              card.highlight
-                                ? 'bg-gradient-to-r from-[#880A45] to-[#14216F] text-white hover:opacity-90 border border-[#880A45]/50'
-                                : 'bg-[#880A45] hover:bg-[#9E0D52] text-white border border-[#880A45]/40'
-                            }`}
+                            className="w-full py-3 px-4 rounded-xl font-['Montserrat'] font-bold text-xs tracking-wider uppercase transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer bg-[#0F2A1D] hover:bg-[#375534] text-[#E3EED4] border border-[#6B9071]/50"
                           >
-                            <ArrowDownToLine className={`w-4 h-4 ${isDownloading ? 'animate-bounce' : ''}`} />
+                            <ArrowDownToLine className={`w-4 h-4 text-[#6B9071] ${isDownloading ? 'animate-bounce' : ''}`} />
                             <span>
                               {isDownloading ? 'EXPORTING EXCEL (.XLSX)...' : 'DOWNLOAD EXCEL (.XLSX) »'}
                             </span>
@@ -818,30 +811,30 @@ const Download = () => {
 
         {/* ----------------- VERIFICATION PASSES TAB ----------------- */}
         {tab === 'status' && !isStatusAuthorized && (
-          <div className="bg-[#0B0616]/90 backdrop-blur-2xl border border-white/15 rounded-2xl p-6 sm:p-10 shadow-[0_12px_35px_rgba(0,0,0,0.85)] relative text-center max-w-xl mx-auto">
-            <div className="absolute -top-3 left-6 bg-gradient-to-r from-[#880A45] to-[#14216F] text-white px-3.5 py-0.5 rounded-lg text-[10px] font-['Cinzel'] font-bold uppercase tracking-widest border border-white/20 shadow-[0_0_15px_rgba(136,10,69,0.4)]">
+          <div className="bg-[#0F2A1D] border border-[#6B9071]/30 rounded-2xl p-6 sm:p-10 shadow-lg relative text-center max-w-xl mx-auto">
+            <div className="absolute -top-3 left-6 bg-[#375534] text-[#E3EED4] px-3.5 py-0.5 rounded-lg text-[10px] font-['Montserrat'] font-bold uppercase tracking-widest border border-[#6B9071]/40 shadow-md">
               Jury Authentication
             </div>
 
             <div className="text-center mb-6 mt-2 flex flex-col items-center">
-              <h2 className="text-xl sm:text-2xl font-['Montserrat'] font-bold text-white uppercase mb-1">
+              <h2 className="text-xl sm:text-2xl font-['Montserrat'] font-bold text-[#E3EED4] uppercase mb-1">
                 RESTRICTED EXECUTIVE ACCESS
               </h2>
-              <p className="text-xs text-gray-300 font-normal">
+              <p className="text-xs text-[#AEC3B0] font-normal">
                 Submit jury passcode to access receipt verification and event controls.
               </p>
             </div>
 
             <form onSubmit={handleUnlockStatusTools} className="space-y-4 max-w-sm mx-auto text-left">
               <div>
-                <label className="block text-[10px] font-['Cinzel'] font-semibold tracking-widest text-gray-300 mb-1.5 uppercase">
+                <label className="block text-[10px] font-['Montserrat'] font-semibold tracking-widest text-[#AEC3B0] mb-1.5 uppercase">
                   ADMINISTRATIVE ACCESS KEY
                 </label>
                 <input
                   type="password"
                   value={statusGatePassword}
                   onChange={(e) => setStatusGatePassword(e.target.value)}
-                  className="w-full h-11 bg-black/60 border border-white/15 rounded-xl px-4 focus:border-[#880A45] outline-none transition font-medium text-xs text-white"
+                  className="w-full h-11 bg-[#07150E] border border-[#6B9071]/30 rounded-xl px-4 focus:border-[#6B9071] outline-none transition font-medium text-xs text-[#E3EED4]"
                   placeholder="Enter administrator key"
                   required
                 />
@@ -852,7 +845,7 @@ const Download = () => {
                 whileTap={{ scale: 0.98 }}
                 type="submit"
                 disabled={loading}
-                className="w-full h-12 rounded-xl font-['Cinzel'] font-bold text-xs tracking-widest bg-gradient-to-r from-[#880A45] to-[#14216F] text-white shadow-md hover:shadow-lg transition-all cursor-pointer flex items-center justify-center gap-2 uppercase"
+                className="w-full h-12 rounded-xl font-['Montserrat'] font-bold text-xs tracking-widest bg-[#0F2A1D] hover:bg-[#375534] text-[#E3EED4] border border-[#6B9071]/50 shadow-md transition-all cursor-pointer flex items-center justify-center gap-2 uppercase"
               >
                 {loading ? 'AUTHENTICATING...' : 'UNLOCK JURY CONSOLE »'}
               </motion.button>
@@ -865,20 +858,20 @@ const Download = () => {
           <div className="space-y-6">
 
             {/* System controls widget */}
-            <div className="bg-[#0B0616]/90 backdrop-blur-2xl border border-white/15 rounded-2xl p-5 sm:p-6 shadow-[0_12px_35px_rgba(0,0,0,0.85)] relative text-left">
-              <div className="absolute -top-3 left-6 bg-gradient-to-r from-[#880A45] to-[#14216F] text-white px-3.5 py-0.5 rounded-lg text-[10px] font-['Cinzel'] font-bold uppercase tracking-widest border border-white/20 shadow-[0_0_15px_rgba(136,10,69,0.4)]">
+            <div className="bg-[#0F2A1D] border border-[#6B9071]/30 rounded-2xl p-5 sm:p-6 shadow-lg relative text-left">
+              <div className="absolute -top-3 left-6 bg-[#375534] text-[#E3EED4] px-3.5 py-0.5 rounded-lg text-[10px] font-['Montserrat'] font-bold uppercase tracking-widest border border-[#6B9071]/40 shadow-md">
                 Configuration
               </div>
 
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mt-2">
                 <div className="space-y-0.5">
-                  <h3 className="text-lg sm:text-xl font-['Montserrat'] font-bold text-white uppercase">REGISTRATION PORTAL</h3>
-                  <p className="text-xs text-gray-300 font-normal">Control global registration intake and team limits.</p>
+                  <h3 className="text-lg sm:text-xl font-['Montserrat'] font-bold text-[#E3EED4] uppercase">REGISTRATION PORTAL</h3>
+                  <p className="text-xs text-[#AEC3B0] font-normal">Control global registration intake and team limits.</p>
                 </div>
 
                 <div className="flex flex-wrap items-center gap-3">
-                  <div className={`px-3.5 py-1.5 rounded-full font-['Cinzel'] font-bold text-xs ${
-                    registrationEnabled ? 'bg-emerald-950/80 text-emerald-400 border border-emerald-500/40' : 'bg-rose-950/80 text-rose-400 border border-rose-500/40'
+                  <div className={`px-3.5 py-1.5 rounded-full font-['Montserrat'] font-bold text-xs ${
+                    registrationEnabled ? 'bg-[#375534] text-[#E3EED4] border border-[#6B9071]/50' : 'bg-rose-950/80 text-rose-300 border border-rose-500/40'
                   }`}>
                     {registrationEnabled ? 'PORTAL ACTIVE' : 'PORTAL PAUSED'}
                   </div>
@@ -887,8 +880,8 @@ const Download = () => {
                     type="button"
                     onClick={handleToggleRegistration}
                     disabled={loading}
-                    className={`px-5 py-2 rounded-xl font-['Cinzel'] font-bold text-xs tracking-wider cursor-pointer transition-all uppercase ${
-                      registrationEnabled ? 'bg-rose-950/80 hover:bg-rose-900 text-rose-300 border border-rose-500/40' : 'bg-emerald-950/80 hover:bg-emerald-900 text-emerald-300 border border-emerald-500/40'
+                    className={`px-5 py-2 rounded-xl font-['Montserrat'] font-bold text-xs tracking-wider cursor-pointer transition-all uppercase ${
+                      registrationEnabled ? 'bg-rose-950/80 hover:bg-rose-900 text-rose-300 border border-rose-500/40' : 'bg-[#375534] hover:bg-[#6B9071] text-[#E3EED4] border border-[#6B9071]/50'
                     }`}
                   >
                     {registrationEnabled ? '🔒 PAUSE REGISTRATIONS' : '✓ OPEN REGISTRATIONS'}
@@ -896,10 +889,10 @@ const Download = () => {
                 </div>
               </div>
 
-              <div className="mt-5 pt-4 border-t border-white/10">
+              <div className="mt-5 pt-4 border-t border-[#6B9071]/20">
                 <div className="flex flex-wrap items-end gap-4">
                   <div className="w-full sm:max-w-xs">
-                    <label className="block text-[10px] font-['Cinzel'] font-semibold tracking-widest text-gray-300 mb-1.5 uppercase">
+                    <label className="block text-[10px] font-['Montserrat'] font-semibold tracking-widest text-[#AEC3B0] mb-1.5 uppercase">
                       MAXIMUM LIST CAPACITY
                     </label>
                     <div className="flex gap-2">
@@ -907,7 +900,7 @@ const Download = () => {
                         type="number"
                         value={maxTeamsInput}
                         onChange={(e) => setMaxTeamsInput(e.target.value)}
-                        className="flex-grow h-10 bg-black/60 text-white border border-white/15 rounded-xl px-3 focus:border-[#880A45] outline-none font-bold text-xs"
+                        className="flex-grow h-10 bg-[#07150E] text-[#E3EED4] border border-[#6B9071]/30 rounded-xl px-3 focus:border-[#6B9071] outline-none font-bold text-xs"
                         placeholder="Limit"
                         min="1"
                       />
@@ -915,23 +908,23 @@ const Download = () => {
                         type="button"
                         onClick={handleUpdateMaxTeams}
                         disabled={loading}
-                        className="bg-gradient-to-r from-[#880A45] to-[#14216F] text-white font-['Cinzel'] font-bold text-xs rounded-xl px-4 shadow-md cursor-pointer hover:opacity-90 transition uppercase"
+                        className="bg-[#375534] hover:bg-[#6B9071] text-[#E3EED4] font-['Montserrat'] font-bold text-xs rounded-xl px-4 shadow-md cursor-pointer transition uppercase"
                       >
                         UPDATE
                       </button>
                     </div>
                   </div>
-                  <div className="font-['Cinzel'] text-xs text-gray-300 font-semibold tracking-wider pb-2">
-                    CURRENT CAP: <span className="font-bold text-white">{maxTeams} TEAMS</span>
+                  <div className="font-['Montserrat'] text-xs text-[#AEC3B0] font-semibold tracking-wider pb-2">
+                    CURRENT CAP: <span className="font-bold text-[#E3EED4]">{maxTeams} TEAMS</span>
                   </div>
                 </div>
               </div>
 
               {/* QR Upload Section */}
-              <div className="mt-5 pt-4 border-t border-white/10">
+              <div className="mt-5 pt-4 border-t border-[#6B9071]/20">
                 <div className="flex flex-col gap-4">
                   <div className="w-full">
-                    <label className="block text-[10px] font-['Cinzel'] font-semibold tracking-widest text-gray-300 mb-1.5 uppercase">
+                    <label className="block text-[10px] font-['Montserrat'] font-semibold tracking-widest text-[#AEC3B0] mb-1.5 uppercase">
                       UPDATE PAYMENT QR CODE
                     </label>
                     <div className="flex flex-col sm:flex-row gap-4 items-start">
@@ -941,14 +934,14 @@ const Download = () => {
                           type="file"
                           accept="image/*"
                           onChange={(e) => setQrFile(e.target.files[0])}
-                          className="flex-grow h-10 bg-black/60 text-gray-300 border border-white/15 rounded-xl px-3 py-2 outline-none font-medium text-xs file:mr-4 file:py-1 file:px-3 file:rounded-lg file:border-0 file:text-[10px] file:font-['Cinzel'] file:font-bold file:bg-white/10 file:text-white hover:file:bg-white/20 transition-all cursor-pointer"
+                          className="flex-grow h-10 bg-[#07150E] text-[#AEC3B0] border border-[#6B9071]/30 rounded-xl px-3 py-2 outline-none font-medium text-xs file:mr-4 file:py-1 file:px-3 file:rounded-lg file:border-0 file:text-[10px] file:font-['Montserrat'] file:font-bold file:bg-[#375534] file:text-[#E3EED4] hover:file:bg-[#6B9071] transition-all cursor-pointer"
                         />
                         <div className="flex gap-2">
                           <button
                             type="button"
                             onClick={handleQRUpload}
                             disabled={loading || !qrFile}
-                            className="flex-grow bg-gradient-to-r from-[#880A45] to-[#14216F] disabled:opacity-50 text-white font-['Cinzel'] font-bold text-xs rounded-xl px-4 py-3 shadow-md cursor-pointer hover:opacity-90 transition uppercase"
+                            className="flex-grow bg-[#0F2A1D] hover:bg-[#375534] disabled:opacity-50 text-[#E3EED4] font-['Montserrat'] font-bold text-xs rounded-xl px-4 py-3 shadow-md cursor-pointer transition uppercase"
                           >
                             UPLOAD QR
                           </button>
@@ -957,7 +950,7 @@ const Download = () => {
                               type="button"
                               onClick={() => setQrFile(null)}
                               disabled={loading}
-                              className="bg-white/10 hover:bg-white/20 border border-white/20 text-gray-300 font-['Cinzel'] font-bold text-xs rounded-xl px-4 py-3 shadow-md cursor-pointer transition uppercase"
+                              className="bg-[#AEC3B0]/20 hover:bg-[#AEC3B0]/30 border border-[#6B9071]/30 text-[#E3EED4] font-['Montserrat'] font-bold text-xs rounded-xl px-4 py-3 shadow-md cursor-pointer transition uppercase"
                             >
                               CANCEL
                             </button>
@@ -965,8 +958,8 @@ const Download = () => {
                         </div>
                       </div>
                       
-                      <div className="p-2 bg-white/5 border border-white/15 rounded-xl shadow-md flex-shrink-0">
-                        <p className="text-[9px] font-['Cinzel'] text-gray-400 uppercase tracking-widest mb-1 text-center font-bold">
+                      <div className="p-2 bg-[#07150E] border border-[#6B9071]/30 rounded-xl shadow-md flex-shrink-0">
+                        <p className="text-[9px] font-['Montserrat'] text-[#AEC3B0] uppercase tracking-widest mb-1 text-center font-bold">
                           {qrFile ? "PREVIEW" : "CURRENT QR"}
                         </p>
                         <img 
@@ -982,70 +975,70 @@ const Download = () => {
             </div>
 
             {/* Verification Table */}
-            <div className="bg-[#0B0616]/90 backdrop-blur-2xl border border-white/15 rounded-2xl p-5 sm:p-6 shadow-[0_12px_35px_rgba(0,0,0,0.85)] relative text-left">
+            <div className="bg-[#0F2A1D] border border-[#6B9071]/30 rounded-2xl p-5 sm:p-6 shadow-lg relative text-left">
               <div className="flex flex-wrap items-center justify-between gap-4 mb-5">
                 <div>
-                  <h2 className="text-lg sm:text-xl font-['Montserrat'] font-bold text-white uppercase">PASS VERIFICATION</h2>
-                  <p className="text-xs text-gray-300 font-normal">Review and verify incoming team entry payment receipts.</p>
+                  <h2 className="text-lg sm:text-xl font-['Montserrat'] font-bold text-[#E3EED4] uppercase">PASS VERIFICATION</h2>
+                  <p className="text-xs text-[#AEC3B0] font-normal">Review and verify incoming team entry payment receipts.</p>
                 </div>
                 <button
                   type="button"
                   onClick={handleRefreshPayments}
                   disabled={loading}
-                  className="bg-[#880A45] hover:bg-[#9E0D52] border border-[#880A45]/40 text-white font-['Cinzel'] font-bold text-xs rounded-xl px-4 py-2 flex items-center gap-1.5 cursor-pointer transition uppercase"
+                  className="bg-[#375534] hover:bg-[#6B9071] border border-[#6B9071]/40 text-[#E3EED4] font-['Montserrat'] font-bold text-xs rounded-xl px-4 py-2 flex items-center gap-1.5 cursor-pointer transition uppercase"
                 >
                   <RotateCw size={14} className={loading ? "animate-spin" : ""} /> REFRESH LIST
                 </button>
               </div>
 
               {!allPayments ? (
-                <div className="text-center font-['Cinzel'] text-gray-400 py-8 tracking-widest text-xs">
+                <div className="text-center font-['Montserrat'] text-[#AEC3B0] py-8 tracking-widest text-xs">
                   RETRIEVING TEAM SUBMISSIONS...
                 </div>
               ) : (
                 <>
                   {/* Filter Search */}
                   <div className="mb-5">
-                    <label className="block text-[10px] font-['Cinzel'] font-semibold tracking-widest text-gray-400 mb-1.5 uppercase">
+                    <label className="block text-[10px] font-['Montserrat'] font-semibold tracking-widest text-[#AEC3B0] mb-1.5 uppercase">
                       FILTER BY TEAM NAME OR UTR TRANSACTION ID
                     </label>
                     <input
                       type="text"
                       value={statusFilter}
                       onChange={(e) => setStatusFilter(e.target.value)}
-                      className="w-full h-11 bg-black/60 border border-white/15 rounded-xl px-4 focus:border-[#880A45] outline-none font-medium text-xs text-white placeholder:text-gray-500"
+                      className="w-full h-11 bg-[#07150E] border border-[#6B9071]/30 rounded-xl px-4 focus:border-[#6B9071] outline-none font-medium text-xs text-[#E3EED4] placeholder:text-[#AEC3B0]/60"
                       placeholder="Type team name or transaction ID to filter..."
                     />
                   </div>
 
                   {/* Stat Metric Boxes */}
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
-                    <div className="bg-black/60 border border-[#880A45]/40 rounded-2xl p-4 text-center">
-                      <p className="text-2xl font-['Montserrat'] font-bold text-pink-300 mb-0.5">{allPayments.statusCounts.pending}</p>
-                      <p className="text-[10px] font-['Cinzel'] font-bold tracking-widest text-pink-200/80 uppercase">PENDING JURY REVIEW</p>
+                    <div className="bg-[#07150E] border border-[#6B9071]/30 rounded-2xl p-4 text-center">
+                      <p className="text-2xl font-['Montserrat'] font-bold text-[#E3EED4] mb-0.5">{allPayments.statusCounts.pending}</p>
+                      <p className="text-[10px] font-['Montserrat'] font-bold tracking-widest text-[#AEC3B0] uppercase">PENDING JURY REVIEW</p>
                     </div>
 
-                    <div className="bg-black/60 border border-emerald-500/30 rounded-2xl p-4 text-center">
+                    <div className="bg-[#07150E] border border-[#6B9071]/30 rounded-2xl p-4 text-center">
                       <p className="text-2xl font-['Montserrat'] font-bold text-emerald-400 mb-0.5">{allPayments.statusCounts.verified}</p>
-                      <p className="text-[10px] font-['Cinzel'] font-bold tracking-widest text-emerald-300 uppercase">VERIFIED TEAMS</p>
+                      <p className="text-[10px] font-['Montserrat'] font-bold tracking-widest text-emerald-300 uppercase">VERIFIED TEAMS</p>
                     </div>
 
-                    <div className="bg-black/60 border border-rose-500/30 rounded-2xl p-4 text-center">
+                    <div className="bg-[#07150E] border border-rose-500/30 rounded-2xl p-4 text-center">
                       <p className="text-2xl font-['Montserrat'] font-bold text-rose-400 mb-0.5">{allPayments.statusCounts.rejected}</p>
-                      <p className="text-[10px] font-['Cinzel'] font-bold tracking-widest text-rose-300 uppercase">REJECTED ENTRIES</p>
+                      <p className="text-[10px] font-['Montserrat'] font-bold tracking-widest text-rose-300 uppercase">REJECTED ENTRIES</p>
                     </div>
                   </div>
 
                   {/* Table List */}
-                  <div className="overflow-x-auto border border-white/15 rounded-xl bg-black/40">
+                  <div className="overflow-x-auto border border-[#6B9071]/30 rounded-xl bg-[#07150E]">
                     <table className="w-full border-collapse text-xs">
                       <thead>
-                        <tr className="bg-black/70 text-gray-300 font-['Cinzel'] text-xs tracking-wider border-b border-white/15">
-                          <th className="px-4 py-3 text-left border-r border-white/10">TEAM NAME</th>
-                          <th className="px-4 py-3 text-left border-r border-white/10">TRANSACTION UTR</th>
-                          <th className="px-4 py-3 text-center border-r border-white/10">RECEIPT</th>
-                          <th className="px-4 py-3 text-left border-r border-white/10">SUBMISSION DATE</th>
-                          <th className="px-4 py-3 text-center border-r border-white/10">STATUS</th>
+                        <tr className="bg-[#0F2A1D] text-[#E3EED4] font-['Montserrat'] text-xs tracking-wider border-b border-[#6B9071]/30">
+                          <th className="px-4 py-3 text-left border-r border-[#6B9071]/20">TEAM NAME</th>
+                          <th className="px-4 py-3 text-left border-r border-[#6B9071]/20">TRANSACTION UTR</th>
+                          <th className="px-4 py-3 text-center border-r border-[#6B9071]/20">RECEIPT</th>
+                          <th className="px-4 py-3 text-left border-r border-[#6B9071]/20">SUBMISSION DATE</th>
+                          <th className="px-4 py-3 text-center border-r border-[#6B9071]/20">STATUS</th>
                           <th className="px-4 py-3 text-center">JURY DECISION</th>
                         </tr>
                       </thead>
@@ -1061,32 +1054,38 @@ const Download = () => {
                           return (
                             <tr
                               key={team._id}
-                              className="border-b border-white/10 hover:bg-white/5 text-gray-200 transition-colors"
+                              className="border-b border-[#6B9071]/20 hover:bg-[#375534]/20 text-[#E3EED4] transition-colors"
                             >
-                              <td className="px-4 py-3.5 border-r border-white/10 font-['Montserrat'] font-bold text-sm text-white">{team.teamName}</td>
-                              <td className="px-4 py-3.5 border-r border-white/10 font-mono text-[11px] text-gray-300 font-bold select-all">{team.payment.transactionId}</td>
-                              <td className="px-4 py-3.5 border-r border-white/10 text-center">
+                              <td className="px-4 py-3.5 border-r border-[#6B9071]/20 font-['Montserrat'] font-bold text-sm text-[#E3EED4]">{team.teamName}</td>
+                              <td className="px-4 py-3.5 border-r border-[#6B9071]/20 font-mono text-[11px] text-[#AEC3B0] font-bold select-all">{team.payment.transactionId}</td>
+                              <td className="px-4 py-3.5 border-r border-[#6B9071]/20 text-center">
                                 {team.payment.receiptUrl ? (
                                   <button
                                     type="button"
                                     onClick={() => openImageModal(team.payment.receiptUrl)}
-                                    className="bg-white/5 hover:bg-white/10 text-gray-300 border border-white/15 rounded-lg px-3 py-1 font-['Cinzel'] text-[10px] font-bold cursor-pointer transition uppercase"
+                                    className="bg-[#375534] hover:bg-[#6B9071] text-[#E3EED4] border border-[#6B9071]/40 rounded-lg px-3 py-1 font-['Montserrat'] text-[10px] font-bold cursor-pointer transition uppercase"
                                   >
                                     VIEW RECEIPT
                                   </button>
                                 ) : (
-                                  <span className="text-gray-500 font-['Cinzel'] text-[9px] uppercase">NO RECEIPT</span>
+                                  <span className="text-[#AEC3B0]/60 font-['Montserrat'] text-[9px] uppercase">NO RECEIPT</span>
                                 )}
                               </td>
-                              <td className="px-4 py-3.5 border-r border-white/10 text-[11px] text-gray-300 font-normal">
+                              <td className="px-4 py-3.5 border-r border-[#6B9071]/20 text-[11px] text-[#AEC3B0] font-normal">
                                 {new Date(team.submittedAt).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })}
                               </td>
-                              <td className="px-4 py-3.5 border-r border-white/10 text-center">
-                                <div className={`inline-block px-3 py-0.5 rounded-full text-[10px] font-['Cinzel'] ${getStatusBubbleStyle(currentStatus)}`}>
+                              <td className="px-4 py-3.5 border-r border-[#6B9071]/20 text-center">
+                                <div className={`inline-block px-3 py-0.5 rounded-full text-[10px] font-['Montserrat'] ${
+                                  currentStatus === 'verified'
+                                    ? 'bg-[#375534] text-[#E3EED4] border border-[#6B9071]/50 font-bold'
+                                    : currentStatus === 'rejected'
+                                    ? 'bg-rose-950/80 text-rose-300 border border-rose-500/40 font-bold'
+                                    : 'bg-[#AEC3B0]/20 text-[#E3EED4] border border-[#6B9071]/30 font-bold'
+                                }`}>
                                   {currentStatus.toUpperCase()}
                                 </div>
                               </td>
-                              <td className="px-4 py-3.5 text-center font-['Cinzel'] text-[10px] font-bold">
+                              <td className="px-4 py-3.5 text-center font-['Montserrat'] text-[10px] font-bold">
                                 <div className="flex justify-center items-center gap-2">
                                   <button
                                     type="button"
@@ -1095,7 +1094,7 @@ const Download = () => {
                                     className={`rounded-lg px-3 py-1 cursor-pointer transition uppercase ${
                                       currentStatus === 'verified'
                                         ? 'bg-gray-800 text-gray-500 cursor-not-allowed opacity-50'
-                                        : 'bg-emerald-950/80 hover:bg-emerald-900 text-emerald-300 border border-emerald-500/40'
+                                        : 'bg-[#375534] hover:bg-[#6B9071] text-[#E3EED4] border border-[#6B9071]/50'
                                     }`}
                                   >
                                     VERIFY

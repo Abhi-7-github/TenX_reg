@@ -650,7 +650,7 @@ const AddProblems = () => {
               animate={{ scale: 1, opacity: 1 }}
               className="relative w-full max-w-lg bg-[#0B0616]/90 backdrop-blur-2xl border border-white/20 rounded-3xl p-6 sm:p-10 shadow-[0_25px_60px_rgba(0,0,0,0.95)] text-center overflow-hidden"
             >
-              <div className="absolute top-0 right-0 bg-gradient-to-r from-[#880A45] to-[#14216F] text-white border-b border-l border-white/20 px-4 py-1.5 font-['Cinzel'] text-xs tracking-widest font-bold rounded-tr-3xl shadow-sm">
+              <div className="absolute top-0 right-0 bg-[#0F2A1D] hover:bg-[#375534] text-white border-b border-l border-white/20 px-4 py-1.5 font-['Cinzel'] text-xs tracking-widest font-bold rounded-tr-3xl shadow-sm">
                 ADMIN CONSOLE
               </div>
 
@@ -696,7 +696,7 @@ const AddProblems = () => {
                   whileTap={{ scale: 0.98 }}
                   type="submit"
                   disabled={isVerifying}
-                  className="w-full h-12 rounded-xl font-['Cinzel'] font-bold text-xs tracking-widest bg-gradient-to-r from-[#880A45] to-[#14216F] text-white shadow-md hover:shadow-lg transition-all cursor-pointer flex items-center justify-center gap-2 uppercase"
+                  className="w-full h-12 rounded-xl font-['Cinzel'] font-bold text-xs tracking-widest bg-[#0F2A1D] hover:bg-[#375534] text-white shadow-md hover:shadow-lg transition-all cursor-pointer flex items-center justify-center gap-2 uppercase"
                 >
                   {isVerifying ? "AUTHENTICATING..." : "ENTER JURY ARENA »"}
                 </motion.button>
@@ -728,7 +728,7 @@ const AddProblems = () => {
                     <button
                       type="button"
                       onClick={openCreate}
-                      className="px-4 sm:px-5 py-2 rounded-xl bg-gradient-to-r from-[#880A45] to-[#14216F] hover:opacity-90 text-white transition-all shadow-md uppercase tracking-wider flex items-center gap-1.5 cursor-pointer border border-[#880A45]/50"
+                      className="px-4 sm:px-5 py-2 rounded-xl bg-[#0F2A1D] hover:bg-[#375534] hover:opacity-90 text-white transition-all shadow-md uppercase tracking-wider flex items-center gap-1.5 cursor-pointer border border-[#880A45]/50"
                     >
                       <Plus size={14} /> ADD DESIGN BRIEF
                     </button>
@@ -753,7 +753,7 @@ const AddProblems = () => {
                     <button
                       type="button"
                       onClick={showProblems}
-                      className="px-4 sm:px-5 py-2 rounded-xl bg-gradient-to-r from-[#880A45] to-[#14216F] hover:opacity-90 text-white transition-all shadow-md uppercase tracking-wider flex items-center gap-1.5 cursor-pointer border border-[#880A45]/50"
+                      className="px-4 sm:px-5 py-2 rounded-xl bg-[#0F2A1D] hover:bg-[#375534] hover:opacity-90 text-white transition-all shadow-md uppercase tracking-wider flex items-center gap-1.5 cursor-pointer border border-[#880A45]/50"
                     >
                       <FileText size={14} /> DESIGN BRIEFS VAULT
                     </button>
@@ -797,7 +797,7 @@ const AddProblems = () => {
 
                 {/* Enable toggle control widget */}
                 <div className="bg-[#0B0616]/90 backdrop-blur-2xl border border-white/15 rounded-2xl p-5 sm:p-6 shadow-[0_12px_35px_rgba(0,0,0,0.85)] relative text-left">
-                  <div className="absolute -top-3 left-6 bg-gradient-to-r from-[#880A45] to-[#14216F] text-white px-3.5 py-0.5 rounded-lg text-[10px] font-['Cinzel'] font-bold uppercase tracking-widest border border-white/20 shadow-[0_0_15px_rgba(136,10,69,0.4)]">
+                  <div className="absolute -top-3 left-6 bg-[#0F2A1D] hover:bg-[#375534] text-white px-3.5 py-0.5 rounded-lg text-[10px] font-['Cinzel'] font-bold uppercase tracking-widest border border-white/20 shadow-[0_0_15px_rgba(136,10,69,0.4)]">
                     Brief Access Control
                   </div>
 
@@ -838,7 +838,7 @@ const AddProblems = () => {
 
                 {/* List of Problem Statements */}
                 <div className="bg-[#0B0616]/90 backdrop-blur-2xl border border-white/15 rounded-2xl p-5 sm:p-6 shadow-[0_12px_35px_rgba(0,0,0,0.85)] relative text-left">
-                  <div className="absolute -top-3 left-6 bg-gradient-to-r from-[#880A45] to-[#14216F] text-white px-3.5 py-0.5 rounded-lg text-[10px] font-['Cinzel'] font-bold uppercase tracking-widest border border-white/20 shadow-[0_0_15px_rgba(136,10,69,0.4)]">
+                  <div className="absolute -top-3 left-6 bg-[#0F2A1D] hover:bg-[#375534] text-white px-3.5 py-0.5 rounded-lg text-[10px] font-['Cinzel'] font-bold uppercase tracking-widest border border-white/20 shadow-[0_0_15px_rgba(136,10,69,0.4)]">
                     Collections Directory
                   </div>
 
@@ -913,7 +913,7 @@ const AddProblems = () => {
             {/* ----------------- TEAMS TAB ----------------- */}
             {viewMode === VIEW_MODES.students && (
               <div className="bg-[#0B0616]/90 backdrop-blur-2xl border border-white/15 rounded-2xl p-5 sm:p-6 shadow-[0_12px_35px_rgba(0,0,0,0.85)] relative text-left">
-                <div className="absolute -top-3 left-6 bg-gradient-to-r from-[#880A45] to-[#14216F] text-white px-3.5 py-0.5 rounded-lg text-[10px] font-['Cinzel'] font-bold uppercase tracking-widest border border-white/20 shadow-[0_0_15px_rgba(136,10,69,0.4)]">
+                <div className="absolute -top-3 left-6 bg-[#0F2A1D] hover:bg-[#375534] text-white px-3.5 py-0.5 rounded-lg text-[10px] font-['Cinzel'] font-bold uppercase tracking-widest border border-white/20 shadow-[0_0_15px_rgba(136,10,69,0.4)]">
                   Team Lists
                 </div>
 
@@ -927,7 +927,7 @@ const AddProblems = () => {
                       type="button"
                       onClick={() => exportSubmissionsToCSV()}
                       disabled={isExporting}
-                      className="bg-gradient-to-r from-[#880A45] to-[#14216F] text-white rounded-xl px-4 py-2 font-['Cinzel'] text-xs font-bold cursor-pointer flex items-center gap-1.5 shadow-md hover:opacity-90 transition uppercase"
+                      className="bg-[#0F2A1D] hover:bg-[#375534] text-white rounded-xl px-4 py-2 font-['Cinzel'] text-xs font-bold cursor-pointer flex items-center gap-1.5 shadow-md hover:opacity-90 transition uppercase"
                       title="Download all teams and submissions as CSV"
                     >
                       <Download size={14} className={isExporting ? "animate-spin" : ""} />
@@ -1016,7 +1016,7 @@ const AddProblems = () => {
                                   <button
                                     type="button"
                                     onClick={() => setManageSubmissionsPopup(t)}
-                                    className="bg-gradient-to-r from-[#880A45] to-[#14216F] text-white rounded-lg px-2.5 py-1 cursor-pointer inline-flex items-center gap-1 transition shadow-sm uppercase"
+                                    className="bg-[#0F2A1D] hover:bg-[#375534] text-white rounded-lg px-2.5 py-1 cursor-pointer inline-flex items-center gap-1 transition shadow-sm uppercase"
                                   >
                                     <FileText size={11} /> SUBMISSIONS ({t.submissions?.length || 0})
                                   </button>
@@ -1245,7 +1245,7 @@ const AddProblems = () => {
                       type="submit"
                       disabled={!canSave}
                       className={`rounded-xl px-6 py-2.5 transition-all cursor-pointer uppercase ${
-                        canSave ? "bg-gradient-to-r from-[#880A45] to-[#14216F] text-white shadow-md" : "bg-gray-800 text-gray-400 opacity-60 cursor-not-allowed"
+                        canSave ? "bg-[#0F2A1D] hover:bg-[#375534] text-white shadow-md" : "bg-gray-800 text-gray-400 opacity-60 cursor-not-allowed"
                       }`}
                     >
                       {isSaving ? "SAVING BRIEF..." : "✓ CREATE DESIGN BRIEF"}
@@ -1336,7 +1336,7 @@ const AddProblems = () => {
                       whileTap={{ scale: 0.98 }}
                       type="submit"
                       disabled={isUpdating}
-                      className="bg-gradient-to-r from-[#880A45] to-[#14216F] text-white rounded-xl px-6 py-2.5 shadow-md transition-all cursor-pointer uppercase"
+                      className="bg-[#0F2A1D] hover:bg-[#375534] text-white rounded-xl px-6 py-2.5 shadow-md transition-all cursor-pointer uppercase"
                     >
                       {isUpdating ? "SAVING CHANGES..." : "✓ SAVE CHANGES"}
                     </motion.button>
@@ -1388,7 +1388,7 @@ const AddProblems = () => {
                 <button
                   type="button"
                   onClick={handleAddFormSlot}
-                  className="bg-gradient-to-r from-[#880A45] to-[#14216F] text-white rounded-xl px-4 py-1.5 font-['Cinzel'] text-xs font-bold cursor-pointer inline-flex items-center gap-1 shadow-md uppercase"
+                  className="bg-[#0F2A1D] hover:bg-[#375534] text-white rounded-xl px-4 py-1.5 font-['Cinzel'] text-xs font-bold cursor-pointer inline-flex items-center gap-1 shadow-md uppercase"
                 >
                   <Plus size={12} /> ADD SUBMISSION SLOT
                 </button>

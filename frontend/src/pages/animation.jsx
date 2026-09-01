@@ -119,85 +119,85 @@ const Animation = () => {
             >
               {/* Meta Date & Format Pill */}
               <div className="flex flex-wrap items-center gap-2 sm:gap-3">
-                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#180D22]/80 border border-[#880A45]/40 text-[#880A45] font-['Cinzel'] text-[10px] sm:text-xs tracking-wider font-bold">
-                  <Calendar className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-[#880A45]" />
-                  <span>SEPTEMBER 2026 • 24 HOUR'S HACKATHON</span>
+                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#0F2A1D] border border-[#6B9071]/50 text-[#E3EED4] font-['Montserrat'] text-[10px] sm:text-xs tracking-wider font-bold">
+                  <Calendar className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-[#6B9071]" />
+                  <span>SEPTEMBER 2026 • 24 HOUR AGENT HACKATHON</span>
                 </div>
 
-                <div className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full border text-[10px] sm:text-xs font-['Cinzel'] font-bold ${
+                <div className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full border text-[10px] sm:text-xs font-['Montserrat'] font-bold ${
                   isClosed
-                    ? 'bg-rose-950/50 border-rose-500/40 text-rose-300'
-                    : 'bg-white/5 border-white/10 text-gray-300'
+                    ? 'bg-rose-950/80 border-rose-500/40 text-rose-200'
+                    : 'bg-[#375534]/60 border-[#6B9071]/40 text-[#E3EED4]'
                 }`}>
-                  <span className={`w-2 h-2 rounded-full ${isClosed ? 'bg-rose-500 animate-pulse' : 'bg-emerald-400'}`}></span>
-                  <span>{!isClosed ? 'REGISTERATIONS OPEN' : 'REGISTERATIONS FULL'}</span>
+                  <span className={`w-2 h-2 rounded-full ${isClosed ? 'bg-rose-500 animate-pulse' : 'bg-[#6B9071]'}`}></span>
+                  <span>{!isClosed ? 'REGISTRATIONS OPEN' : 'REGISTRATIONS FULL'}</span>
                 </div>
               </div>
 
-              {/* Headline (Responsive font that never overlaps or clips 'N') */}
-              <div className="w-full">
-                <h1 className="font-['Montserrat'] font-black text-3xl sm:text-4xl md:text-4xl lg:text-5xl xl:text-6xl tracking-tight uppercase text-white leading-none whitespace-nowrap">
-                  THREADATHON
+              {/* Headline */}
+              <div className="w-full flex items-center gap-4">
+                <h1 className="font-['Montserrat'] font-black text-3xl sm:text-4xl md:text-4xl lg:text-5xl xl:text-6xl tracking-tight uppercase text-[#E3EED4] leading-none">
+                  10X AGENTHACK <span className="text-[#6B9071]">'26</span>
                 </h1>
               </div>
 
-              {/* Mobile-Only Hero Image Banner (Visible only on mobile < md) */}
-              <div className="block md:hidden w-full my-2 rounded-2xl overflow-hidden border border-white/20 shadow-lg">
+              {/* Mobile-Only Hero Banner */}
+              <div className="block md:hidden w-full my-2 rounded-2xl overflow-hidden border border-[#6B9071]/30 shadow-lg">
                 <img
-                  src="/fashion_tech_hero.jpg"
-                  alt="Threadathon Creators"
-                  className="w-full aspect-[16/10] object-cover object-center"
+                  src="/club_logo.png"
+                  alt="10X AGENTHACK '26"
+                  className="w-full aspect-[16/10] object-contain p-4 bg-[#0F2A1D]"
                 />
               </div>
 
               {/* Tagline Statement */}
-              <p className="text-sm sm:text-lg md:text-xl lg:text-2xl text-gray-200 font-['Cormorant_Garamond'] italic tracking-wide font-normal leading-snug sm:leading-relaxed">
-                Design the future.. wear the change.. from thread to technology..
+              <p className="text-sm sm:text-lg md:text-xl lg:text-2xl text-[#AEC3B0] font-['Montserrat'] tracking-wide font-medium leading-snug sm:leading-relaxed">
+                Build the future.. Deploy intelligent AI Agents.. 10X CLUB KARE
               </p>
 
               {/* Key Event Highlights Row */}
               <div className="grid grid-cols-2 gap-3 sm:gap-4 py-0.5 max-w-lg">
-                <div className="p-2.5 sm:p-3 rounded-2xl bg-white/5 border border-white/10">
-                  <Users className="w-4 h-4 text-[#880A45] mb-1" />
-                  <span className="font-['Cinzel'] text-xs font-bold text-white block">4 DESIGNERS</span>
-                  <span className="text-[10px] text-gray-400">1 Lead + 3 Members</span>
+                <div className="p-3 sm:p-3.5 rounded-2xl bg-[#0F2A1D]/90 border border-[#6B9071]/30">
+                  <Users className="w-4 h-4 text-[#6B9071] mb-1" />
+                  <span className="font-['Montserrat'] text-xs font-bold text-[#E3EED4] block">4 AGENT DEVELOPERS</span>
+                  <span className="text-[10px] text-[#AEC3B0]">1 Lead + 3 Members</span>
                 </div>
 
-                <div className="p-2.5 sm:p-3 rounded-2xl bg-white/5 border border-white/10">
-                  <CreditCard className="w-4 h-4 text-emerald-400 mb-1" />
-                  <span className="font-['Cinzel'] text-xs font-bold text-white block">₹1400</span>
-                  <span className="text-[10px] text-gray-400">₹350 / Member</span>
+                <div className="p-3 sm:p-3.5 rounded-2xl bg-[#0F2A1D]/90 border border-[#6B9071]/30">
+                  <CreditCard className="w-4 h-4 text-[#6B9071] mb-1" />
+                  <span className="font-['Montserrat'] text-xs font-bold text-[#E3EED4] block">₹1400</span>
+                  <span className="text-[10px] text-[#AEC3B0]">₹350 / Member</span>
                 </div>
               </div>
 
               {/* Live Capacity Tracker */}
-              <div className="max-w-lg p-3 sm:p-3.5 rounded-2xl bg-white/5 border border-white/10">
-                <div className="flex justify-between items-center mb-1.5 text-[11px] sm:text-xs font-['Cinzel'] font-semibold">
-                  <span className="text-gray-300 flex items-center gap-1.5">
-                    <Gem className="w-3.5 h-3.5 text-[#880A45]" /> THREADATHON SLOTS
+              <div className="max-w-lg p-3 sm:p-3.5 rounded-2xl bg-[#0F2A1D]/90 border border-[#6B9071]/30">
+                <div className="flex justify-between items-center mb-1.5 text-[11px] sm:text-xs font-['Montserrat'] font-semibold">
+                  <span className="text-[#E3EED4] flex items-center gap-1.5">
+                    <Gem className="w-3.5 h-3.5 text-[#6B9071]" /> 10X AGENTHACK SLOTS
                   </span>
                 </div>
 
                 {/* Progress Bar Track */}
-                <div className="w-full bg-black/60 border border-white/15 h-2 rounded-full overflow-hidden p-0.5">
+                <div className="w-full bg-[#07150E] border border-[#6B9071]/30 h-3 rounded-full overflow-hidden p-0.5">
                   <div
-                    className="bg-gradient-to-r from-[#880A45] to-[#14216F] h-full rounded-full transition-all duration-700"
+                    className="bg-gradient-to-r from-[#375534] via-[#6B9071] to-[#AEC3B0] h-full rounded-full transition-all duration-700"
                     style={{ width: `${progressPercent}%` }}
                   />
                 </div>
               </div>
 
-              {/* Primary CTA Button with Dynamic Registration Status */}
+              {/* Primary CTA Button */}
               <div className="pt-1 max-w-lg">
                 <motion.button
                   whileHover={!isClosed && !checkingStatus ? { scale: 1.02 } : {}}
                   whileTap={!isClosed && !checkingStatus ? { scale: 0.98 } : {}}
                   onClick={handleRegisterClick}
                   disabled={isClosed || checkingStatus}
-                  className={`w-full font-['Cinzel'] text-xs sm:text-sm tracking-wider font-bold py-3 sm:py-3.5 px-8 rounded-xl transition-all duration-200 shadow-md flex items-center justify-center gap-2 ${
+                  className={`w-full font-['Montserrat'] text-xs sm:text-sm tracking-wider font-bold py-3.5 px-8 rounded-xl transition-all duration-200 shadow-md flex items-center justify-center gap-2 ${
                     isClosed
                       ? 'bg-gray-800 text-gray-400 cursor-not-allowed opacity-60 border border-white/10'
-                      : 'bg-[#880A45] hover:bg-[#9E0D52] text-white cursor-pointer border border-[#880A45]/40 shadow-[0_0_20px_rgba(136,10,69,0.3)]'
+                      : 'bg-[#0F2A1D] hover:bg-[#375534] text-[#E3EED4] cursor-pointer border border-[#6B9071]/50 shadow-[0_4px_20px_rgba(15,42,29,0.5)]'
                   }`}
                 >
                   <span>
@@ -206,7 +206,7 @@ const Animation = () => {
                       : !registrationEnabled
                       ? 'REGISTRATIONS PAUSED'
                       : teamCount >= maxTeams
-                      ? 'THREADATHON SLOTS FULL'
+                      ? '10X AGENTHACK SLOTS FULL'
                       : 'REGISTER NOW'}
                   </span>
                   {!isClosed && !checkingStatus && <ArrowRight className="w-4 h-4" />}
@@ -215,37 +215,39 @@ const Animation = () => {
             </motion.div>
 
 
-            {/* ================= RIGHT COLUMN: Editorial Photograph (md and above) ================= */}
+            {/* ================= RIGHT COLUMN: Logo Card ================= */}
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.7, delay: 0.1 }}
               className="hidden md:flex md:col-span-5 relative order-2 justify-end"
             >
-              <div className="relative w-full max-h-[460px] aspect-[4/5] rounded-3xl overflow-hidden border border-white/20 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.95),0_0_30px_rgba(136,10,69,0.2)] group flex flex-col justify-end">
+              <div className="relative w-full max-h-[460px] aspect-[4/5] rounded-3xl overflow-hidden border border-[#6B9071]/30 shadow-[0_25px_60px_-15px_rgba(15,42,29,0.9)] group flex flex-col justify-end bg-gradient-to-br from-[#0F2A1D] to-[#07150E] p-6">
                 
-                {/* Main Editorial Image */}
-                <img
-                  src="/fashion_tech_hero.jpg"
-                  alt="Threadathon Creators Collaborating"
-                  className="absolute inset-0 w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-700"
-                />
+                {/* Main Logo Display */}
+                <div className="absolute inset-0 flex items-center justify-center p-8">
+                  <img
+                    src="/club_logo.png"
+                    alt="10X AGENTHACK '26 Logo"
+                    className="w-full max-h-80 object-contain group-hover:scale-105 transition-transform duration-700 drop-shadow-[0_10px_25px_rgba(0,0,0,0.8)]"
+                  />
+                </div>
 
-                {/* Ambient Vignette Gradient Overlay */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-transparent to-black/20 pointer-events-none" />
+                {/* Ambient Overlay */}
+                <div className="absolute inset-0 bg-gradient-to-t from-[#0F2A1D]/90 via-transparent to-[#0F2A1D]/30 pointer-events-none" />
 
-                {/* Floating Bottom Card Over Image */}
-                <div className="relative z-10 m-3 sm:m-4 p-3 sm:p-3.5 rounded-2xl bg-black/75 backdrop-blur-xl border border-white/15 text-left">
-                  <div className="flex items-center justify-between mb-0.5">
-                    <span className="font-['Cinzel'] text-[11px] font-bold tracking-wider text-white">
-                      CAMPUS CREATIVE CLUB
+                {/* Floating Bottom Card Over Logo */}
+                <div className="relative z-10 p-3.5 sm:p-4 rounded-2xl bg-[#0F2A1D]/90 backdrop-blur-xl border border-[#6B9071]/40 text-left">
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="font-['Montserrat'] text-xs font-bold tracking-wider text-[#E3EED4]">
+                      10X CLUB KARE
                     </span>
-                    <span className="text-[9px] font-['Cinzel'] font-bold text-[#880A45] tracking-widest uppercase">
-                      LIVE EVENT
+                    <span className="text-[10px] font-['Montserrat'] font-bold text-[#AEC3B0] tracking-widest uppercase">
+                      OFFICIAL HACKATHON
                     </span>
                   </div>
-                  <p className="text-[11px] text-gray-300 font-normal">
-                    FABRIC, FASHION & FUTURE INNOVATION HACKATHON
+                  <p className="text-[11px] text-[#AEC3B0] font-normal">
+                    AI AGENTS & FUTURE TECHNOLOGIES
                   </p>
                 </div>
 

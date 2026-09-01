@@ -1,122 +1,158 @@
-@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;800;900&family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&family=Montserrat:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,900;1,400;1,600;1,700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Montserrat:wght@400;500;600;700;800;900&display=swap');
 @import "tailwindcss";
 
+:root {
+  --primary: #0F2A1D;     /* Deep Forest */
+  --secondary: #375534;   /* Forest Green */
+  --accent: #6B9071;      /* Sage */
+  --soft: #AEC3B0;        /* Soft Sage */
+  --background: #E3EED4;  /* Cream */
+}
+
 @theme {
-  --font-serif-luxury: "Playfair Display", "Cormorant Garamond", Georgia, serif;
-  --font-cinzel: "Cinzel", "Playfair Display", serif;
-  --font-cormorant: "Cormorant Garamond", Georgia, serif;
   --font-sans-modern: "Plus Jakarta Sans", "Montserrat", sans-serif;
   --font-montserrat: "Montserrat", sans-serif;
 
-  /* Aliased fonts for compatibility */
-  --font-bangers: "Cinzel", "Playfair Display", serif;
-  --font-poppins: "Plus Jakarta Sans", sans-serif;
-  --font-outfit: "Plus Jakarta Sans", sans-serif;
-  --font-jakarta: "Plus Jakarta Sans", sans-serif;
-  --font-luckiest: "Playfair Display", serif;
-  --font-fredoka: "Plus Jakarta Sans", sans-serif;
-  --font-comic: "Plus Jakarta Sans", sans-serif;
+  --color-primary: #0F2A1D;
+  --color-secondary: #375534;
+  --color-accent: #6B9071;
+  --color-soft: #AEC3B0;
+  --color-cream-bg: #E3EED4;
 
-  /* THREADATHON Exact Logo Color Palette (#880A45 & #14216F) */
-  --color-thread-pink: #880A45;
-  --color-thread-pink-light: #B31C63;
-  --color-thread-blue: #14216F;
-  --color-thread-blue-light: #2A3FB0;
-  --color-thread-magenta: #880A45;
-  --color-thread-indigo: #14216F;
-  --color-thread-violet: #14216F;
-  --color-thread-purple: #14216F;
+  /* Legacy re-mappings for complete component compatibility */
+  --color-thread-pink: #375534;
+  --color-thread-pink-light: #6B9071;
+  --color-thread-blue: #0F2A1D;
+  --color-thread-blue-light: #375534;
+  --color-thread-magenta: #375534;
+  --color-thread-indigo: #0F2A1D;
+  --color-thread-violet: #0F2A1D;
+  --color-thread-purple: #0F2A1D;
 
-  --color-gold-light: #B31C63;
-  --color-gold-main: #880A45;
-  --color-gold-dark: #14216F;
-  --color-gold-rich: #14216F;
-  --color-gold-metallic: #880A45;
-  --color-champagne: #1A1230;
-  --color-champagne-light: #241A40;
-  --color-silk-ivory: #FDFBFF;
-  --color-noir-deep: #070410;
-  --color-noir-card: #0F0A24;
-  --color-noir-surface: #150E32;
-  --color-noir-border: #2D1F50;
-  --color-blush-rose: #B31C63;
-  --color-burgundy: #880A45;
-  --color-emerald-luxury: #10B981;
-  --color-emerald-light: #34D399;
+  --color-gold-light: #6B9071;
+  --color-gold-main: #375534;
+  --color-gold-dark: #0F2A1D;
+  --color-gold-rich: #0F2A1D;
+  --color-gold-metallic: #6B9071;
+  --color-champagne: #0F2A1D;
+  --color-champagne-light: #1A3929;
+  --color-silk-ivory: #E3EED4;
+  --color-noir-deep: #07150E;
+  --color-noir-card: #0F2A1D;
+  --color-noir-surface: #173827;
+  --color-noir-border: #375534;
+  --color-blush-rose: #6B9071;
+  --color-burgundy: #0F2A1D;
+  --color-emerald-luxury: #375534;
+  --color-emerald-light: #6B9071;
 
-  /* Re-mapped existing utility colors */
-  --color-sky-blue: #14216F;
-  --color-cyan-custom: #14216F;
-  --color-bright-orange: #880A45;
-  --color-coral-orange: #880A45;
-  --color-accent-yellow: #B31C63;
-  --color-light-gray: #150E32;
+  --color-sky-blue: #0F2A1D;
+  --color-cyan-custom: #375534;
+  --color-bright-orange: #375534;
+  --color-coral-orange: #6B9071;
+  --color-accent-yellow: #AEC3B0;
+  --color-light-gray: #173827;
 
-  --color-comic-cyan: #14216F;
-  --color-comic-yellow: #B31C63;
-  --color-comic-red: #880A45;
-  --color-comic-orange: #14216F;
-  --color-comic-purple: #14216F;
-  --color-comic-blue: #14216F;
-  --color-comic-green: #10B981;
-  --color-comic-lime: #34D399;
+  --color-comic-cyan: #375534;
+  --color-comic-yellow: #E3EED4;
+  --color-comic-red: #0F2A1D;
+  --color-comic-orange: #6B9071;
+  --color-comic-purple: #0F2A1D;
+  --color-comic-blue: #0F2A1D;
+  --color-comic-green: #375534;
+  --color-comic-lime: #6B9071;
 }
 
-/* Luxury Dark Glassmorphism Classes */
+/* Global Body Styling */
+body {
+  background-color: var(--background);
+  color: var(--primary);
+  font-family: var(--font-sans-modern);
+  overflow-x: hidden;
+}
+
+/* Primary Button Design Token */
+.btn-primary {
+  background-color: var(--primary) !important;
+  color: var(--background) !important;
+  border-radius: 0.75rem;
+  padding: 0.625rem 1.5rem;
+  font-weight: 700;
+  transition: all 0.2s ease-in-out;
+  border: 1px solid var(--secondary);
+}
+
+.btn-primary:hover {
+  background-color: var(--secondary) !important;
+  box-shadow: 0 4px 14px rgba(15, 42, 29, 0.25);
+}
+
+/* Secondary Button Design Token */
+.btn-secondary {
+  background-color: var(--soft) !important;
+  color: var(--primary) !important;
+  border-radius: 0.75rem;
+  padding: 0.625rem 1.5rem;
+  font-weight: 700;
+  transition: all 0.2s ease-in-out;
+  border: 1px solid var(--accent);
+}
+
+.btn-secondary:hover {
+  background-color: var(--accent) !important;
+  color: #FFFFFF !important;
+}
+
+/* Card & Glass Panel Components */
 .fashion-card,
 .glass-panel,
 .ultra-glass {
-  background: linear-gradient(135deg, rgba(16, 14, 24, 0.75) 0%, rgba(4, 3, 8, 0.90) 100%) !important;
-  backdrop-filter: blur(28px) saturate(180%) !important;
-  -webkit-backdrop-filter: blur(28px) saturate(180%) !important;
-  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  background: linear-gradient(145deg, rgba(15, 42, 29, 0.94) 0%, rgba(7, 21, 14, 0.98) 100%) !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+  border: 1px solid rgba(174, 195, 176, 0.25) !important;
   box-shadow: 
-    inset 0 1.5px 1px 0 rgba(255, 255, 255, 0.16),
-    0 25px 60px -15px rgba(0, 0, 0, 0.95) !important;
-  border-radius: 1.75rem;
+    inset 0 1px 1px 0 rgba(227, 238, 212, 0.2),
+    0 20px 50px -10px rgba(15, 42, 29, 0.5) !important;
+  border-radius: 1.25rem;
 }
 
 .fashion-card-dark,
 .glass-panel-dark {
-  background: linear-gradient(135deg, rgba(12, 10, 18, 0.80) 0%, rgba(2, 2, 5, 0.95) 100%) !important;
-  backdrop-filter: blur(28px) saturate(180%) !important;
-  -webkit-backdrop-filter: blur(28px) saturate(180%) !important;
-  border: 1px solid rgba(255, 255, 255, 0.10) !important;
-  box-shadow: 
-    inset 0 1.5px 1px 0 rgba(255, 255, 255, 0.12),
-    0 25px 60px -15px rgba(0, 0, 0, 0.98) !important;
-  border-radius: 1.75rem;
+  background: linear-gradient(145deg, rgba(15, 42, 29, 0.96) 0%, rgba(5, 15, 10, 0.99) 100%) !important;
+  backdrop-filter: blur(20px) !important;
+  border: 1px solid rgba(107, 144, 113, 0.3) !important;
+  box-shadow: 0 20px 50px -10px rgba(0, 0, 0, 0.6) !important;
+  border-radius: 1.25rem;
 }
 
 .glass-inner,
 .glass-card {
-  background: linear-gradient(135deg, rgba(18, 15, 28, 0.70) 0%, rgba(6, 5, 12, 0.85) 100%) !important;
-  backdrop-filter: blur(20px) saturate(160%) !important;
-  -webkit-backdrop-filter: blur(20px) saturate(160%) !important;
-  border: 1px solid rgba(255, 255, 255, 0.10) !important;
-  box-shadow: 
-    inset 0 1px 1px 0 rgba(255, 255, 255, 0.12),
-    0 10px 30px -5px rgba(0, 0, 0, 0.8) !important;
+  background: rgba(23, 56, 39, 0.8) !important;
+  backdrop-filter: blur(16px) !important;
+  border: 1px solid rgba(174, 195, 176, 0.2) !important;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4) !important;
 }
 
+/* Inputs & Form Controls */
 .glass-input {
-  background: rgba(0, 0, 0, 0.6) !important;
-  backdrop-filter: blur(14px) !important;
-  -webkit-backdrop-filter: blur(14px) !important;
-  border: 1px solid rgba(255, 255, 255, 0.14) !important;
-  color: #FFFFFF !important;
+  background: rgba(7, 21, 14, 0.75) !important;
+  backdrop-filter: blur(12px) !important;
+  border: 1px solid rgba(174, 195, 176, 0.3) !important;
+  color: #E3EED4 !important;
+  border-radius: 0.75rem;
 }
 
 .glass-input:focus {
-  background: rgba(0, 0, 0, 0.85) !important;
-  border-color: #880A45 !important;
-  box-shadow: 0 0 0 3px rgba(136, 10, 69, 0.35), inset 0 1px 1px rgba(255, 255, 255, 0.2) !important;
+  background: rgba(7, 21, 14, 0.95) !important;
+  border-color: #6B9071 !important;
+  box-shadow: 0 0 0 3px rgba(107, 144, 113, 0.35) !important;
 }
 
 /* Custom Sleek Scrollbar */
 html {
   scrollbar-width: thin;
-  scrollbar-color: #880A45 #000000;
+  scrollbar-color: #375534 #0F2A1D;
 }
 
 ::-webkit-scrollbar {
@@ -125,16 +161,15 @@ html {
 }
 
 ::-webkit-scrollbar-track {
-  background: #000000;
+  background: #0F2A1D;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, #880A45 0%, #14216F 100%);
+  background: linear-gradient(180deg, #6B9071 0%, #375534 100%);
   border-radius: 9999px;
-  border: 1px solid rgba(255, 255, 255, 0.18);
+  border: 1px solid rgba(227, 238, 212, 0.2);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(180deg, #A80E56 0%, #1E34A8 100%);
-  border-color: rgba(255, 255, 255, 0.35);
+  background: #6B9071;
 }

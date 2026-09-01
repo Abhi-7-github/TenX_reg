@@ -24,22 +24,22 @@ export const FashionBackground = () => {
   }, []);
 
   return (
-    <div className="fixed inset-0 w-full h-full pointer-events-none -z-10 overflow-hidden bg-black select-none">
-      {/* Pure Pitch Black Base */}
-      <div className="absolute inset-0 bg-[#000000]" />
+    <div className="fixed inset-0 w-full h-full pointer-events-none -z-10 overflow-hidden bg-[#0F2A1D] select-none">
+      {/* Deep Forest Base */}
+      <div className="absolute inset-0 bg-[#0F2A1D]" />
 
-      {/* Subtle Ambient Radial Lighting in Theme Colors (#880A45 & #14216F) */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_top_right,rgba(136,10,69,0.18)_0%,transparent_60%),radial-gradient(ellipse_80%_60%_at_bottom_left,rgba(20,33,111,0.20)_0%,transparent_60%)]" />
+      {/* Subtle Ambient Radial Lighting in Deep Forest & Sage (#375534, #6B9071 & #AEC3B0) */}
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_top_right,rgba(107,144,113,0.22)_0%,transparent_60%),radial-gradient(ellipse_80%_60%_at_bottom_left,rgba(55,85,52,0.28)_0%,transparent_60%)]" />
 
-      {/* Base Grid Layer (Subtle Ambient Visibility) */}
+      {/* Base Grid Layer */}
       <div 
-        className="absolute inset-0 opacity-40"
+        className="absolute inset-0 opacity-25"
         style={{
           backgroundImage: `
-            linear-gradient(to right, rgba(255, 255, 255, 0.06) 1px, transparent 1px),
-            linear-gradient(to bottom, rgba(255, 255, 255, 0.06) 1px, transparent 1px)
+            linear-gradient(to right, rgba(174, 195, 176, 0.1) 1px, transparent 1px),
+            linear-gradient(to bottom, rgba(174, 195, 176, 0.1) 1px, transparent 1px)
           `,
-          backgroundSize: '80px 80px'
+          backgroundSize: '70px 70px'
         }}
       />
 
@@ -50,29 +50,29 @@ export const FashionBackground = () => {
         }`}
         style={{
           background: `
-            radial-gradient(550px circle at ${mousePos.x}px ${mousePos.y}px, rgba(136, 10, 69, 0.22), rgba(20, 33, 111, 0.18), transparent 75%)
+            radial-gradient(550px circle at ${mousePos.x}px ${mousePos.y}px, rgba(107, 144, 113, 0.22), rgba(55, 85, 52, 0.18), transparent 75%)
           `
         }}
       />
 
-      {/* Interactive Illuminated Grid (Revealed prominently around the cursor) */}
+      {/* Interactive Illuminated Grid */}
       <div 
         className={`absolute inset-0 transition-opacity duration-300 ${
           isHovering ? 'opacity-100' : 'opacity-0'
         }`}
         style={{
           backgroundImage: `
-            linear-gradient(to right, rgba(255, 255, 255, 0.22) 1px, transparent 1px),
-            linear-gradient(to bottom, rgba(255, 255, 255, 0.22) 1px, transparent 1px)
+            linear-gradient(to right, rgba(227, 238, 212, 0.18) 1px, transparent 1px),
+            linear-gradient(to bottom, rgba(227, 238, 212, 0.18) 1px, transparent 1px)
           `,
-          backgroundSize: '80px 80px',
+          backgroundSize: '70px 70px',
           maskImage: `radial-gradient(380px circle at ${mousePos.x}px ${mousePos.y}px, black 0%, transparent 80%)`,
           WebkitMaskImage: `radial-gradient(380px circle at ${mousePos.x}px ${mousePos.y}px, black 0%, transparent 80%)`
         }}
       />
 
-      {/* Gentle Edge Vignette */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_30%,rgba(0,0,0,0.5)_100%)] pointer-events-none" />
+      {/* Edge Vignette */}
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_30%,rgba(7,21,14,0.75)_100%)] pointer-events-none" />
     </div>
   );
 };
