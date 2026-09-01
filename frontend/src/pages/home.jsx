@@ -1110,7 +1110,7 @@ const Home = () => {
                         ENTRY FEE BREAKDOWN
                       </span>
                       <span className="font-['Montserrat'] text-lg sm:text-xl font-bold text-white">
-                        ₹300 × 4 = ₹1,200 <span className="text-xs font-normal text-gray-400 font-sans">/ Team Pass</span>
+                        ₹350 × 4 = ₹1400 <span className="text-xs font-normal text-gray-400 font-sans">/ Team Pass</span>
                       </span>
                     </div>
 
