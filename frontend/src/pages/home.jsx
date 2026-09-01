@@ -67,8 +67,9 @@ const Home = () => {
       try {
         const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/payment-qr`);
         const data = await response.json();
-        if (data.success && data.url) {
-          setQrUrl(data.url);
+        const url = data.url || data.qrUrl;
+        if (data.success && url) {
+          setQrUrl(url);
         }
       } catch (error) {
         console.error('Failed to fetch QR url:', error);

@@ -132,7 +132,8 @@ app.post('/api/update-max-teams', async (req, res) => {
 app.get('/api/payment-qr', async (req, res) => {
   try {
     let setting = await AppSettings.findOne({ key: 'paymentQr' });
-    res.json({ success: true, qrUrl: setting ? setting.qrUrl : '' });
+    const qrUrl = setting ? setting.qrUrl : '';
+    res.json({ success: true, url: qrUrl, qrUrl: qrUrl });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
   }
@@ -154,7 +155,7 @@ app.post('/api/upload-qr', upload.single('qrCode'), async (req, res) => {
       { qrUrl: result.secure_url, updatedAt: new Date() },
       { upsert: true, new: true }
     );
-    res.json({ success: true, url: setting.qrUrl });
+    res.json({ success: true, url: setting.qrUrl, qrUrl: setting.qrUrl });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
   }

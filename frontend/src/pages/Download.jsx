@@ -36,7 +36,8 @@ const Download = () => {
     fetch(`${import.meta.env.VITE_BACKEND_URL}/api/payment-qr`)
       .then(res => res.json())
       .then(data => {
-        if (data.success && data.url) setQrUrl(data.url);
+        const url = data.url || data.qrUrl;
+        if (data.success && url) setQrUrl(url);
       })
       .catch(console.error);
   }, []);
@@ -426,7 +427,8 @@ const Download = () => {
       if (!response.ok) throw new Error(data.message || 'Failed to upload QR code');
       setSuccess('Payment QR code updated successfully');
       setQrFile(null);
-      if (data.url) setQrUrl(data.url);
+      const url = data.url || data.qrUrl;
+      if (url) setQrUrl(url);
       setTimeout(() => setSuccess(''), 3000);
     } catch (err) {
       setError(err.message || 'An error occurred during upload');
