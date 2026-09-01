@@ -1,4 +1,5 @@
 require('dotenv').config();
+const crypto = require('crypto');
 const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
@@ -14,19 +15,33 @@ const {
 
 const app = express();
 const PORT = process.env.PORT || 5000;
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || process.env.adminPassword;
+const DOWNLOAD_PASSWORD = process.env.DOWNLOAD_PASSWORD || process.env.downloadPassword;
+
+if (!ADMIN_PASSWORD || !DOWNLOAD_PASSWORD) {
+  console.error('Missing required environment variables: ADMIN_PASSWORD and DOWNLOAD_PASSWORD');
+  process.exit(1);
+}
 
 // Middleware
+app.disable('x-powered-by');
 app.use(cors());
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 // Helper: Validate Admin Passcode
+const secureCompare = (input, expected) => {
+  if (typeof input !== 'string' || typeof expected !== 'string') return false;
+  const a = Buffer.from(input);
+  const b = Buffer.from(expected);
+  if (a.length !== b.length) return false;
+  return crypto.timingSafeEqual(a, b);
+};
+
 const validateAdminPassword = (password) => {
-  if (!password) return false;
-  const adminPass = process.env.adminPassword || 'madhan@10x';
-  const downloadPass = process.env.DOWNLOAD_PASSWORD || '10Xpass';
+  if (!password || typeof password !== 'string') return false;
   const input = String(password).trim();
-  return input === adminPass || input === downloadPass;
+  return secureCompare(input, ADMIN_PASSWORD) || secureCompare(input, DOWNLOAD_PASSWORD);
 };
 
 // Helper: Upload file buffer to Cloudinary
