@@ -409,15 +409,15 @@ const Download = () => {
   const handleQRUpload = async () => {
     if (!statusPassword) return setError('Please enter admin access key');
     if (!qrFile) return setError('Please select a QR code image to upload');
-    
+
     setLoading(true);
     setError('');
     setSuccess('');
-    
+
     const formData = new FormData();
     formData.append('password', statusPassword);
     formData.append('qrCode', qrFile);
-    
+
     try {
       const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/upload-qr`, {
         method: 'POST',
@@ -581,11 +581,10 @@ const Download = () => {
                 setError('');
                 setSuccess('');
               }}
-              className={`px-4 sm:px-5 py-2 rounded-xl transition-all cursor-pointer uppercase tracking-wider flex items-center gap-1.5 ${
-                tab === 'download'
+              className={`px-4 sm:px-5 py-2 rounded-xl transition-all cursor-pointer uppercase tracking-wider flex items-center gap-1.5 ${tab === 'download'
                   ? 'bg-[#375534] text-[#E3EED4] shadow-md border border-[#6B9071]/60'
                   : 'bg-[#07150E]/60 text-[#AEC3B0] border border-[#6B9071]/30 hover:bg-[#375534]/50 hover:text-[#E3EED4]'
-              }`}
+                }`}
             >
               <FileSpreadsheet className="w-3.5 h-3.5 text-[#6B9071]" />
               Excel Export Hub
@@ -597,11 +596,10 @@ const Download = () => {
                 setError('');
                 setSuccess('');
               }}
-              className={`px-4 sm:px-5 py-2 rounded-xl transition-all cursor-pointer uppercase tracking-wider flex items-center gap-1.5 ${
-                tab === 'status'
+              className={`px-4 sm:px-5 py-2 rounded-xl transition-all cursor-pointer uppercase tracking-wider flex items-center gap-1.5 ${tab === 'status'
                   ? 'bg-[#375534] text-[#E3EED4] shadow-md border border-[#6B9071]/60'
                   : 'bg-[#07150E]/60 text-[#AEC3B0] border border-[#6B9071]/30 hover:bg-[#375534]/50 hover:text-[#E3EED4]'
-              }`}
+                }`}
             >
               <Shield className="w-3.5 h-3.5 text-[#6B9071]" />
               Verify Passes
@@ -750,19 +748,17 @@ const Download = () => {
                     return (
                       <div
                         key={card.id}
-                        className={`rounded-2xl p-6 flex flex-col justify-between shadow-lg relative transition-all bg-[#0F2A1D] border ${
-                          card.highlight
+                        className={`rounded-2xl p-6 flex flex-col justify-between shadow-lg relative transition-all bg-[#0F2A1D] border ${card.highlight
                             ? 'border-2 border-[#6B9071]'
                             : 'border-[#6B9071]/30 hover:border-[#6B9071]/60'
-                        }`}
+                          }`}
                       >
                         {/* Top Badge */}
                         <div className="flex justify-between items-start mb-3">
-                          <span className={`font-['Montserrat'] text-[10px] font-bold px-3 py-0.5 rounded-full uppercase tracking-wider ${
-                            card.highlight
+                          <span className={`font-['Montserrat'] text-[10px] font-bold px-3 py-0.5 rounded-full uppercase tracking-wider ${card.highlight
                               ? 'bg-[#375534] text-[#E3EED4] shadow-sm'
                               : 'bg-[#375534]/50 text-[#AEC3B0] border border-[#6B9071]/40'
-                          }`}>
+                            }`}>
                             {card.tag}
                           </span>
 
@@ -872,9 +868,8 @@ const Download = () => {
                 </div>
 
                 <div className="flex flex-wrap items-center gap-3">
-                  <div className={`px-3.5 py-1.5 rounded-full font-['Montserrat'] font-bold text-xs ${
-                    registrationEnabled ? 'bg-[#375534] text-[#E3EED4] border border-[#6B9071]/50' : 'bg-rose-950/80 text-rose-300 border border-rose-500/40'
-                  }`}>
+                  <div className={`px-3.5 py-1.5 rounded-full font-['Montserrat'] font-bold text-xs ${registrationEnabled ? 'bg-[#375534] text-[#E3EED4] border border-[#6B9071]/50' : 'bg-rose-950/80 text-rose-300 border border-rose-500/40'
+                    }`}>
                     {registrationEnabled ? 'PORTAL ACTIVE' : 'PORTAL PAUSED'}
                   </div>
 
@@ -882,9 +877,8 @@ const Download = () => {
                     type="button"
                     onClick={handleToggleRegistration}
                     disabled={loading}
-                    className={`px-5 py-2 rounded-xl font-['Montserrat'] font-bold text-xs tracking-wider cursor-pointer transition-all uppercase ${
-                      registrationEnabled ? 'bg-rose-950/80 hover:bg-rose-900 text-rose-300 border border-rose-500/40' : 'bg-[#375534] hover:bg-[#6B9071] text-[#E3EED4] border border-[#6B9071]/50'
-                    }`}
+                    className={`px-5 py-2 rounded-xl font-['Montserrat'] font-bold text-xs tracking-wider cursor-pointer transition-all uppercase ${registrationEnabled ? 'bg-rose-950/80 hover:bg-rose-900 text-rose-300 border border-rose-500/40' : 'bg-[#375534] hover:bg-[#6B9071] text-[#E3EED4] border border-[#6B9071]/50'
+                      }`}
                   >
                     {registrationEnabled ? '🔒 PAUSE REGISTRATIONS' : '✓ OPEN REGISTRATIONS'}
                   </button>
@@ -959,14 +953,14 @@ const Download = () => {
                           )}
                         </div>
                       </div>
-                      
+
                       <div className="p-2 bg-[#07150E] border border-[#6B9071]/30 rounded-xl shadow-md flex-shrink-0">
                         <p className="text-[9px] font-['Montserrat'] text-[#AEC3B0] uppercase tracking-widest mb-1 text-center font-bold">
                           {qrFile ? "PREVIEW" : "CURRENT QR"}
                         </p>
-                        <img 
-                          src={qrFile ? URL.createObjectURL(qrFile) : qrUrl} 
-                          alt="Payment QR" 
+                        <img
+                          src={qrFile ? URL.createObjectURL(qrFile) : qrUrl}
+                          alt="Payment QR"
                           className="w-24 h-24 sm:w-32 sm:h-32 object-contain mx-auto rounded-lg bg-white p-1.5"
                         />
                       </div>
@@ -1077,13 +1071,12 @@ const Download = () => {
                                 {new Date(team.submittedAt).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })}
                               </td>
                               <td className="px-4 py-3.5 border-r border-[#6B9071]/20 text-center">
-                                <div className={`inline-block px-3 py-0.5 rounded-full text-[10px] font-['Montserrat'] ${
-                                  currentStatus === 'verified'
+                                <div className={`inline-block px-3 py-0.5 rounded-full text-[10px] font-['Montserrat'] ${currentStatus === 'verified'
                                     ? 'bg-[#375534] text-[#E3EED4] border border-[#6B9071]/50 font-bold'
                                     : currentStatus === 'rejected'
-                                    ? 'bg-rose-950/80 text-rose-300 border border-rose-500/40 font-bold'
-                                    : 'bg-[#AEC3B0]/20 text-[#E3EED4] border border-[#6B9071]/30 font-bold'
-                                }`}>
+                                      ? 'bg-rose-950/80 text-rose-300 border border-rose-500/40 font-bold'
+                                      : 'bg-[#AEC3B0]/20 text-[#E3EED4] border border-[#6B9071]/30 font-bold'
+                                  }`}>
                                   {currentStatus.toUpperCase()}
                                 </div>
                               </td>
@@ -1093,11 +1086,10 @@ const Download = () => {
                                     type="button"
                                     onClick={() => handleDirectUpdateStatus(team.payment.transactionId, 'verified')}
                                     disabled={loading || currentStatus === 'verified'}
-                                    className={`rounded-lg px-3 py-1 cursor-pointer transition uppercase ${
-                                      currentStatus === 'verified'
+                                    className={`rounded-lg px-3 py-1 cursor-pointer transition uppercase ${currentStatus === 'verified'
                                         ? 'bg-gray-800 text-gray-500 cursor-not-allowed opacity-50'
                                         : 'bg-[#375534] hover:bg-[#6B9071] text-[#E3EED4] border border-[#6B9071]/50'
-                                    }`}
+                                      }`}
                                   >
                                     VERIFY
                                   </button>
@@ -1105,11 +1097,10 @@ const Download = () => {
                                     type="button"
                                     onClick={() => handleDirectUpdateStatus(team.payment.transactionId, 'rejected')}
                                     disabled={loading || currentStatus === 'rejected'}
-                                    className={`rounded-lg px-3 py-1 cursor-pointer transition uppercase ${
-                                      currentStatus === 'rejected'
+                                    className={`rounded-lg px-3 py-1 cursor-pointer transition uppercase ${currentStatus === 'rejected'
                                         ? 'bg-gray-800 text-gray-500 cursor-not-allowed opacity-50'
                                         : 'bg-rose-950/80 hover:bg-rose-900 text-rose-300 border border-rose-500/40'
-                                    }`}
+                                      }`}
                                   >
                                     REJECT
                                   </button>

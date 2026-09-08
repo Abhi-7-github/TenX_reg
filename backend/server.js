@@ -13,6 +13,8 @@ const {
   RoundMarks,
 } = require('./model');
 
+const { transformTeamsToNormalizedRows } = require('./utils/excelTransformation');
+
 const app = express();
 const PORT = process.env.PORT || 5000;
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || process.env.adminPassword;
@@ -401,6 +403,10 @@ app.post('/api/download-stats', async (req, res) => {
     let totalMembers = 0;
     let hostelersCount = 0;
     let dayScholarsCount = 0;
+    let hostelGirls = 0;
+    let hostelBoys = 0;
+    let dayScholarGirls = 0;
+    let dayScholarBoys = 0;
 
     teams.forEach((t) => {
       if (t.payment.status === 'verified') verifiedTeams++;
@@ -415,6 +421,11 @@ app.post('/api/download-stats', async (req, res) => {
       members.forEach((m) => {
         if (m.residenceType === 'hosteler') hostelersCount++;
         else dayScholarsCount++;
+
+        if (m.residenceType === 'hosteler' && m.gender === 'Female') hostelGirls++;
+        if (m.residenceType === 'hosteler' && m.gender === 'Male') hostelBoys++;
+        if (m.residenceType === 'dayScholar' && m.gender === 'Female') dayScholarGirls++;
+        if (m.residenceType === 'dayScholar' && m.gender === 'Male') dayScholarBoys++;
       });
     });
 
@@ -426,8 +437,13 @@ app.post('/api/download-stats', async (req, res) => {
         pendingTeams,
         rejectedTeams,
         totalMembers,
+        totalStudents: totalMembers,
         hostelersCount,
         dayScholarsCount,
+        hostelGirls,
+        hostelBoys,
+        dayScholarGirls,
+        dayScholarBoys,
       },
     });
   } catch (err) {
@@ -443,73 +459,24 @@ app.post('/api/download-teams', async (req, res) => {
       return res.status(401).json({ success: false, message: 'Invalid administrator key' });
     }
 
-    let filter = {};
-    if (category === 'verified') filter['payment.status'] = 'verified';
-    else if (category === 'pending') filter['payment.status'] = 'pending';
-    else if (category === 'rejected') filter['payment.status'] = 'rejected';
-
-    const teams = await TeamRegistration.find(filter)
+    const teams = await TeamRegistration.find({})
       .sort({ submittedAt: -1 })
       .populate('selectedProblemStatement');
 
-    let finalTeams = teams;
-    if (category === 'hosteler' || category === 'dayScholar') {
-      finalTeams = teams.filter((t) => {
-        const members = [t.teamLeader, t.teamMember1, t.teamMember2, t.teamMember3].filter(Boolean);
-        return members.some((m) => m.residenceType === category);
-      });
-    }
+    const memberFilters = {
+      hosteler: (member) => member.residenceType === 'hosteler',
+      dayScholar: (member) => member.residenceType === 'dayScholar',
+      'hostel-girls': (member) => member.residenceType === 'hosteler' && member.gender === 'Female',
+      'hostel-boys': (member) => member.residenceType === 'hosteler' && member.gender === 'Male',
+      'dayscholar-girls': (member) => member.residenceType === 'dayScholar' && member.gender === 'Female',
+      'dayscholar-boys': (member) => member.residenceType === 'dayScholar' && member.gender === 'Male',
+    };
 
-    const rows = [];
-    finalTeams.forEach((t) => {
-      const leader = t.teamLeader || {};
-      const m1 = t.teamMember1 || {};
-      const m2 = t.teamMember2 || {};
-      const m3 = t.teamMember3 || {};
-      const problem = t.selectedProblemStatement?.title || 'Not Selected';
+    const rows = transformTeamsToNormalizedRows(teams, memberFilters[category] || undefined);
 
-      rows.push({
-        'Team Name': t.teamName,
-        'Payment Status': t.payment?.status || 'pending',
-        'Transaction ID': t.payment?.transactionId || '',
-        'Design Brief': problem,
-
-        'Leader Name': leader.name || '',
-        'Leader RegNo': leader.regNo || '',
-        'Leader Phone': leader.phoneNo || '',
-        'Leader Year': leader.year || '',
-        'Leader Branch': leader.branch || '',
-        'Leader Section': leader.section || '',
-        'Leader Gender': leader.gender || '',
-        'Leader Residence': leader.residenceType || '',
-        'Leader Hostel': leader.hostelName || '',
-        'Leader Room': leader.roomNo || '',
-
-        'Member 1 Name': m1.name || '',
-        'Member 1 RegNo': m1.regNo || '',
-        'Member 1 Phone': m1.phoneNo || '',
-        'Member 1 Year': m1.year || '',
-        'Member 1 Branch': m1.branch || '',
-        'Member 1 Section': m1.section || '',
-
-        'Member 2 Name': m2.name || '',
-        'Member 2 RegNo': m2.regNo || '',
-        'Member 2 Phone': m2.phoneNo || '',
-        'Member 2 Year': m2.year || '',
-        'Member 2 Branch': m2.branch || '',
-        'Member 2 Section': m2.section || '',
-
-        'Member 3 Name': m3.name || '',
-        'Member 3 RegNo': m3.regNo || '',
-        'Member 3 Phone': m3.phoneNo || '',
-        'Member 3 Year': m3.year || '',
-        'Member 3 Branch': m3.branch || '',
-        'Member 3 Section': m3.section || '',
-        'Submitted At': t.submittedAt ? new Date(t.submittedAt).toISOString() : '',
-      });
+    const worksheet = XLSX.utils.json_to_sheet(rows, {
+      header: ['sno', 'team name', 'name', 'reg no', 'department', 'hostelname', 'room number'],
     });
-
-    const worksheet = XLSX.utils.json_to_sheet(rows);
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, 'Teams');
 
