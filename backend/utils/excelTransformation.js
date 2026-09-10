@@ -13,9 +13,12 @@ function transformTeamsToNormalizedRows(finalTeams, memberFilter = () => true) {
         'team name': team.teamName || '',
         name: member.name || '',
         'reg no': member.regNo ?? '',
+        'mobile number': member.phoneNo || '',
         department: member.branch || '',
         hostelname: member.hostelName || '',
         'room number': member.roomNo || '',
+        'payment status': team.payment?.status || '',
+        'image link': team.payment?.receiptUrl || '',
       });
     });
   });

@@ -475,7 +475,18 @@ app.post('/api/download-teams', async (req, res) => {
     const rows = transformTeamsToNormalizedRows(teams, memberFilters[category] || undefined);
 
     const worksheet = XLSX.utils.json_to_sheet(rows, {
-      header: ['sno', 'team name', 'name', 'reg no', 'department', 'hostelname', 'room number'],
+      header: [
+        'sno',
+        'team name',
+        'name',
+        'reg no',
+        'mobile number',
+        'department',
+        'hostelname',
+        'room number',
+        'payment status',
+        'image link',
+      ],
     });
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, 'Teams');
